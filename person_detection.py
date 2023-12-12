@@ -6,7 +6,7 @@ model = YOLO('yolov8n.pt')
 conf_thresh = 0.5
 
 
-cap = cv2.VideoCapture('images/vid1.mp4')
+cap = cv2.VideoCapture('test_images/vid1.mp4')
 
 while cap.isOpened():
     success, frame = cap.read()
