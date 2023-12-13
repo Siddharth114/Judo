@@ -1,0 +1,6 @@
+train: /Users/siddharth/Code/Python/Judo/data/train/images
+val: /Users/siddharth/Code/Python/Judo/data/val/images
+test: /Users/siddharth/Code/Python/Judo/data/test/images
+
+nc: 1
+names: ['engaged']
