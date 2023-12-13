@@ -29,14 +29,14 @@ def main():
 frames = main()
 
 # writing the annotated frames to a video
-video_name = "output.mp4"
-fps = 25
-fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-frame_size = (960, 540)
+# video_name = "output.mp4"
+# fps = 25
+# fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+# frame_size = (960, 540)
 
-writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
+# writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
 
-for frame in frames:
-    writer.write(frame)
+# for frame in frames:
+#     writer.write(frame)
 
-writer.release()
+# writer.release()
