@@ -31,7 +31,7 @@ def mergeable(box1, box2, x_val=100, y_val=100):
     h1 = y2-y1
     h2 = y4-y3
 
-    dimension_check = not ( (w1<.5*w2 and h1<.5*h2) or (w2<.5*w1 and h2<.5*h1))
+    dimension_check = not ( (w1<.75*w2 and h1<.75*h2) or (w2<.75*w1 and h2<.75*h1))
 
     area1 = w1*h1
     area2 = w2*h2
