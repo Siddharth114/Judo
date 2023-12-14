@@ -53,7 +53,7 @@ def draw_boxes(t, img, ind):
         )
         img = im_arr
 
-    cv2.imwrite(f'starter_images/combined{ind}.jpg', img)
+    cv2.imwrite(f'starter_images/merged{ind}.jpg', img)
     img = Image.fromarray(im_arr[..., ::-1])
     # img.show()
 
@@ -68,7 +68,6 @@ results = model.predict(
 for i, r in enumerate(results):
     bounding_boxes.extend(r.boxes.xywh.tolist())
     for j, k in combinations(r.boxes.xywh.tolist(), r=2):
-        # print('j,k= ',j,k)
         if mergeable(j, k):
             t.append(list(merge(j, k)))
             try:
