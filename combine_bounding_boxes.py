@@ -21,9 +21,24 @@ def mergeable(box1, box2, x_val=100, y_val=100):
         y4,
     ) = box2
 
-    return not (
+    intersection_check = not (
         (x3>x_val+x2 or x4+x_val<x1) or (y3>y2+y_val or y4+y_val<y1)
     )
+
+
+    w1 = x2-x1
+    w2 = x4-x3
+    h1 = y2-y1
+    h2 = y4-y3
+
+    dimension_check = not ( (w1<.5*w2 and h1<.5*h2) or (w2<.5*w1 and h2<.5*h1))
+
+    area1 = w1*h1
+    area2 = w2*h2
+
+    # area_check = not ( (area1<.5*area2) or (area2<.5*area1) )
+    
+    return intersection_check and dimension_check
 
     # return (
     #     max(x1, x2) - min(x1, x2) - minx_w(x1, w1, x2, w2) < x_val
@@ -89,18 +104,16 @@ def draw_boxes(t, img, ind):
         # )
         # img = im_arr
 
-    # cv2.imwrite(f'starter_images/merged{ind}.jpg', img)
+    cv2.imwrite(f'starter_images/merged{ind}.jpg', img)
     fin_img = Image.fromarray(img[..., ::-1])
-    fin_img.show()
+    # fin_img.show()
 
 
 t = []
 bounding_boxes = []
 
-# , 'starter_images/img2.jpg', 'starter_images/img3.jpg'
-
 results = model.predict(
-    ["starter_images/img1.jpg"], classes=[0], show_conf=False, show_labels=False
+    ["starter_images/img1.jpg", 'starter_images/img2.jpg', 'starter_images/img3.jpg'], classes=[0], show_conf=False, show_labels=False
 )
 for i, r in enumerate(results):
     
