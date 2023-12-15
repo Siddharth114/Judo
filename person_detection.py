@@ -85,10 +85,12 @@ def draw_boxes(t, img, coords_to_crop):
 
 def crop_and_add(coords, img):
     if not coords:
-        xmin, ymin, xmax, ymax = [0,0,200,img.shape[1]]
+        xmin, ymin, xmax, ymax = [0,0,500,img.shape[1]]
+        width = img.shape[1]
+        height = img.shape[0]
         cropped_image = img[int(ymin):int(ymax), int(xmin):int(xmax)]
         horizontal_concat = np.concatenate((img, cropped_image), axis=1)
-        horizontal_concat = cv2.rectangle(horizontal_concat, (xmin, ymin), (xmax, ymax), color=(0,0,0), thickness=-1)
+        horizontal_concat = cv2.rectangle(horizontal_concat, (xmin+width, ymin), (xmax+width, ymax), color=(0,0,0), thickness=-1)
 
 
     else:
@@ -120,7 +122,8 @@ def main():
     frames=[]
     
 
-    cap = cv2.VideoCapture('starter_images/vid1.mp4')
+    # cap = cv2.VideoCapture('starter_images/vid1.mp4') #longer video
+    cap = cv2.VideoCapture('starter_images/vid2.mp4') #shorter video
 
     while cap.isOpened():
         bounding_boxes=[]
@@ -168,15 +171,18 @@ def main():
 
 frames = main()
 
+
+
 # writing the annotated frames to a video
-video_name = "starter_images/cropped_merged_output.mp4"
-fps = 25
-fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-frame_size = (960, 540)
 
-writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
+# video_name = "starter_images/cropped_merged_output.mp4"
+# fps = 25
+# fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+# frame_size = (960, 540)
 
-for frame in frames:
-    writer.write(frame)
+# writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
 
-writer.release()
+# for frame in frames:
+#     writer.write(frame)
+
+# writer.release()
