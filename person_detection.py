@@ -84,13 +84,21 @@ def draw_boxes(t, img, coords_to_crop):
     return fin_img
 
 def crop_and_add(coords, img):
+
+    height, width, channels = img.shape
+
+    black_rectangle = np.zeros((height, width, channels), dtype=img.dtype)
+
+    canvas = np.concatenate((img, black_rectangle), axis=1)
+
     if not coords:
-        xmin, ymin, xmax, ymax = [0,0,500,img.shape[1]]
-        width = img.shape[1]
-        height = img.shape[0]
-        cropped_image = img[int(ymin):int(ymax), int(xmin):int(xmax)]
-        horizontal_concat = np.concatenate((img, cropped_image), axis=1)
-        horizontal_concat = cv2.rectangle(horizontal_concat, (xmin+width, ymin), (xmax+width, ymax), color=(0,0,0), thickness=-1)
+        return canvas
+        # xmin, ymin, xmax, ymax = [0,0,500,img.shape[1]]
+        # width = img.shape[1]
+        # height = img.shape[0]
+        # cropped_image = img[int(ymin):int(ymax), int(xmin):int(xmax)]
+        # horizontal_concat = np.concatenate((img, cropped_image), axis=1)
+        # horizontal_concat = cv2.rectangle(horizontal_concat, (xmin+width, ymin), (xmax+width, ymax), color=(0,0,0), thickness=-1)
 
 
     else:
@@ -100,18 +108,20 @@ def crop_and_add(coords, img):
         xmax = min(img.shape[1],xmax+50)
         ymax = min(img.shape[0],ymax+50)
 
+        x_overlay = int(width)
+        y_overlay = 0
         cropped_image = img[int(ymin):int(ymax), int(xmin):int(xmax)]
 
         cropped_aspect_ratio = cropped_image.shape[1] / cropped_image.shape[0]
 
-        height = img.shape[0]
-        width = height * cropped_aspect_ratio
+        cropped_height = img.shape[0]
+        cropped_width = height * cropped_aspect_ratio
         
-        cropped_image = cv2.resize(cropped_image, (int(width), int(height)), interpolation = cv2.INTER_AREA)
-        
-        horizontal_concat = np.concatenate((img, cropped_image), axis=1)
+        cropped_image = cv2.resize(cropped_image, (int(cropped_width), int(cropped_height)), interpolation = cv2.INTER_AREA)
 
-    return horizontal_concat
+        canvas[y_overlay:y_overlay+int(cropped_height), x_overlay:x_overlay+int(cropped_width)] = cropped_image
+
+        return canvas
 
 
 
@@ -178,7 +188,7 @@ frames = main()
 # video_name = "starter_images/cropped_merged_output.mp4"
 # fps = 25
 # fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-# frame_size = (960, 540)
+# frame_size = (1920, 540)
 
 # writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
 
