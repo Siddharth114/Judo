@@ -122,9 +122,12 @@ def crop_and_add(coords, img, ind):
 
     cropped_image = img[int(ymin):int(ymax), int(xmin):int(xmax)]
 
-    cropped_image = cv2.resize(cropped_image, dsize=(img.shape[1], img.shape[0]))
+    cropped_aspect_ratio = cropped_image.shape[1] / cropped_image.shape[0]
 
+    height = img.shape[0]
+    width = height * cropped_aspect_ratio
     
+    cropped_image = cv2.resize(cropped_image, (int(width), int(height)), interpolation = cv2.INTER_AREA)
     
     horizontal_concat = np.concatenate((img, cropped_image), axis=1)
 
