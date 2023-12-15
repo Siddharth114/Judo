@@ -2,7 +2,7 @@ from ultralytics import YOLO
 import cv2
 from PIL import Image
 from itertools import combinations
-from numpy import asarray
+import numpy as np
 
 def mergeable(box1, box2, x_val=100, y_val=100):
     (
@@ -64,8 +64,9 @@ minx_w = lambda x1, w1, x2, w2: w1 if x1 <= x2 else w2
 miny_h = lambda y1, h1, y2, h2: h1 if y1 <= y2 else h2
 
 
-def draw_boxes(t, img, ind=''):
+def draw_boxes(t, img, coords_to_crop):
     if not t:
+        img = crop_and_add(t, img)
         return img
     for i in t:
         (x1,y1,x2,y2,) = i
@@ -76,11 +77,42 @@ def draw_boxes(t, img, ind=''):
         img = cv2.rectangle(
             img, start_point, end_point, color=(0,0,255), thickness=5
         )
-
+    fin_img = crop_and_add(coords_to_crop, img)
     # cv2.imwrite(f'starter_images/merged{ind}.jpg', img)
     # fin_img = Image.fromarray(im_arr[..., ::-1])
     # fin_img.show()
-    return img
+    return fin_img
+
+def crop_and_add(coords, img):
+    if not coords:
+        xmin, ymin, xmax, ymax = [0,0,200,img.shape[1]]
+        cropped_image = img[int(ymin):int(ymax), int(xmin):int(xmax)]
+        horizontal_concat = np.concatenate((img, cropped_image), axis=1)
+        horizontal_concat = cv2.rectangle(horizontal_concat, (xmin, ymin), (xmax, ymax), color=(0,0,0), thickness=-1)
+
+
+    else:
+        xmin, ymin, xmax, ymax = coords
+        xmin = max(0,xmin-50)
+        ymin = max(0, ymin-50)
+        xmax = min(img.shape[1],xmax+50)
+        ymax = min(img.shape[0],ymax+50)
+
+        cropped_image = img[int(ymin):int(ymax), int(xmin):int(xmax)]
+
+        cropped_aspect_ratio = cropped_image.shape[1] / cropped_image.shape[0]
+
+        height = img.shape[0]
+        width = height * cropped_aspect_ratio
+        
+        cropped_image = cv2.resize(cropped_image, (int(width), int(height)), interpolation = cv2.INTER_AREA)
+        
+        horizontal_concat = np.concatenate((img, cropped_image), axis=1)
+
+    return horizontal_concat
+
+
+
 
 def main():
     # model = YOLO('runs/detect/train/weights/best.pt') # engaged detection
@@ -109,7 +141,15 @@ def main():
                         except ValueError:
                             pass
             
-            annotated_frame = draw_boxes(t+bounding_boxes, frame)
+            final_boxes = t+bounding_boxes
+
+            if final_boxes:
+                max_area = max(final_boxes, key=lambda coord: (coord[2]-coord[0])*(coord[3]-coord[1]))
+            else:
+                max_area = []
+
+
+            annotated_frame = draw_boxes(t+bounding_boxes, frame, max_area)
             
             
             # annotated_frame = results[0].plot()
@@ -129,7 +169,7 @@ def main():
 frames = main()
 
 # writing the annotated frames to a video
-video_name = "starter_images/merged_output.mp4"
+video_name = "starter_images/cropped_merged_output.mp4"
 fps = 25
 fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 frame_size = (960, 540)

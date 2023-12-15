@@ -107,7 +107,7 @@ def draw_boxes(t, img, ind, coords_to_crop=[]):
     if coords_to_crop:
         crop_and_add(coords_to_crop, img, ind)
     cv2.imwrite(f'starter_images/merged{ind}.jpg', img)
-    fin_img = Image.fromarray(img[..., ::-1])
+    # fin_img = Image.fromarray(img[..., ::-1])
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
     # fin_img.show()
@@ -115,10 +115,10 @@ def draw_boxes(t, img, ind, coords_to_crop=[]):
 
 def crop_and_add(coords, img, ind):
     xmin, ymin, xmax, ymax = coords
-    xmin -= 50
-    ymin-=50
-    xmax+=50
-    ymax+=50
+    xmin = max(0,xmin-50)
+    ymin = max(0, ymin-50)
+    xmax = min(img.shape[1],xmax+50)
+    ymax = min(img.shape[0],ymax+50)
 
     cropped_image = img[int(ymin):int(ymax), int(xmin):int(xmax)]
 
