@@ -2,7 +2,7 @@ from ultralytics import YOLO
 import cv2
 from PIL import Image
 from itertools import combinations
-from numpy import asarray
+import numpy as np
 
 model = YOLO("yolov8n.pt")
 
@@ -80,7 +80,7 @@ minx_w = lambda x1, w1, x2, w2: w1 if x1 <= x2 else w2
 miny_h = lambda y1, h1, y2, h2: h1 if y1 <= y2 else h2
 
 
-def draw_boxes(t, img, ind):
+def draw_boxes(t, img, ind, coords_to_crop=[]):
     for i in t:
         # x0 = i[0] - i[2] / 2
         # x1 = i[0] + i[2] / 2
@@ -104,13 +104,38 @@ def draw_boxes(t, img, ind):
         # )
         # img = im_arr
 
+    if coords_to_crop:
+        crop_and_add(coords_to_crop, img, ind)
     cv2.imwrite(f'starter_images/merged{ind}.jpg', img)
     fin_img = Image.fromarray(img[..., ::-1])
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
     # fin_img.show()
+
+
+def crop_and_add(coords, img, ind):
+    xmin, ymin, xmax, ymax = coords
+    xmin -= 50
+    ymin-=50
+    xmax+=50
+    ymax+=50
+
+    cropped_image = img[int(ymin):int(ymax), int(xmin):int(xmax)]
+
+    cropped_image = cv2.resize(cropped_image, dsize=(img.shape[1], img.shape[0]))
+
+    
+    
+    horizontal_concat = np.concatenate((img, cropped_image), axis=1)
+
+    cv2.imwrite(f'starter_images/original_and_cropped{ind}.jpg', horizontal_concat)
+
 
 
 t = []
 bounding_boxes = []
+final_boxes = []
+max_area = []
 
 results = model.predict(
     ["starter_images/img1.jpg", 'starter_images/img2.jpg', 'starter_images/img3.jpg'], classes=[0], show_conf=False, show_labels=False
@@ -133,7 +158,11 @@ for i, r in enumerate(results):
 
     # print(t+bounding_boxes)
 
-    draw_boxes(t + bounding_boxes, cv2.imread(f"starter_images/img{i+1}.jpg"), i+1)
+    final_boxes = t+bounding_boxes
+
+    max_area = max(final_boxes, key=lambda coord: (coord[2]-coord[0])*(coord[3]-coord[1]))
+
+    draw_boxes(final_boxes, cv2.imread(f"starter_images/img{i+1}.jpg"), i+1, max_area)
 
     bounding_boxes=[]
     t=[]
