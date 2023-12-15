@@ -181,18 +181,20 @@ def main():
 
 frames = main()
 
+# print(frames[0].shape)
+
 
 
 # writing the annotated frames to a video
 
-# video_name = "starter_images/cropped_merged_output.mp4"
-# fps = 25
-# fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-# frame_size = (1920, 540)
+video_name = "starter_images/merged_cropped_output.mp4"
+fps = 25
+fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+frame_size = (2560, 720)
 
-# writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
+writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
 
-# for frame in frames:
-#     writer.write(frame)
+for frame in frames:
+    writer.write(frame)
 
-# writer.release()
+writer.release()
