@@ -3,6 +3,7 @@ import cv2
 from PIL import Image
 from itertools import combinations
 import numpy as np
+import copy
 
 def mergeable(box1, box2, x_val=100, y_val=100):
     (
@@ -37,6 +38,32 @@ def mergeable(box1, box2, x_val=100, y_val=100):
     
     return intersection_check and dimension_check
 
+
+def get_boxes(boxes):
+    
+    merged = []
+    t_boxes = copy.deepcopy(boxes)
+
+    boxes_to_check = merged + t_boxes
+
+    while any(mergeable(j0,k0) for j0,k0 in combinations(boxes_to_check, r=2)):
+        merged = []
+        t_boxes = copy.deepcopy(boxes_to_check)
+        for j,k in combinations(boxes_to_check, r=2):
+            if mergeable(j,k):
+                merged.append(list(merge(j,k)))
+                try:
+                    t_boxes.remove(j)
+                except ValueError:
+                    pass
+                try:
+                    t_boxes.remove(k)
+                except ValueError:
+                    pass
+                break
+        boxes_to_check = t_boxes + merged
+    
+    return boxes_to_check
 
 def merge(box1, box2):
     (
@@ -93,12 +120,6 @@ def crop_and_add(coords, img):
 
     if not coords:
         return canvas
-        # xmin, ymin, xmax, ymax = [0,0,500,img.shape[1]]
-        # width = img.shape[1]
-        # height = img.shape[0]
-        # cropped_image = img[int(ymin):int(ymax), int(xmin):int(xmax)]
-        # horizontal_concat = np.concatenate((img, cropped_image), axis=1)
-        # horizontal_concat = cv2.rectangle(horizontal_concat, (xmin+width, ymin), (xmax+width, ymax), color=(0,0,0), thickness=-1)
 
 
     else:
@@ -114,8 +135,8 @@ def crop_and_add(coords, img):
 
         cropped_aspect_ratio = cropped_image.shape[1] / cropped_image.shape[0]
 
-        cropped_height = img.shape[0]
-        cropped_width = height * cropped_aspect_ratio
+        cropped_height = min(img.shape[0], height)
+        cropped_width = min(height * cropped_aspect_ratio, width)
         
         cropped_image = cv2.resize(cropped_image, (int(cropped_width), int(cropped_height)), interpolation = cv2.INTER_AREA)
 
@@ -133,7 +154,8 @@ def main():
     
 
     # cap = cv2.VideoCapture('starter_images/vid1.mp4') #longer video
-    cap = cv2.VideoCapture('starter_images/vid2.mp4') #shorter video
+    # cap = cv2.VideoCapture('starter_images/vid2.mp4') #shorter video
+    cap = cv2.VideoCapture('starter_images/vid3.mp4') #video with mulitple players
 
     while cap.isOpened():
         bounding_boxes=[]
@@ -154,7 +176,7 @@ def main():
                         except ValueError:
                             pass
             
-            final_boxes = t+bounding_boxes
+            final_boxes = get_boxes(r.boxes.xyxy.tolist())
 
             if final_boxes:
                 max_area = max(final_boxes, key=lambda coord: (coord[2]-coord[0])*(coord[3]-coord[1]))
@@ -187,14 +209,14 @@ frames = main()
 
 # writing the annotated frames to a video
 
-# video_name = "starter_images/merged_cropped_output.mp4"
-# fps = 25
-# fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-# frame_size = (2560, 720)
+video_name = "starter_images/merged_cropped_output1.mp4"
+fps = 15
+fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+frame_size = (2560, 720)
 
-# writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
+writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
 
-# for frame in frames:
-#     writer.write(frame)
+for frame in frames:
+    writer.write(frame)
 
-# writer.release()
+writer.release()
