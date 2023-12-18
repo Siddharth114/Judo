@@ -3,8 +3,36 @@ import cv2
 from PIL import Image
 from itertools import combinations
 import numpy as np
+import copy
 
 model = YOLO("yolov8n.pt")
+
+
+def get_boxes(boxes):
+    
+    merged = []
+    t_boxes = copy.deepcopy(boxes)
+
+    boxes_to_check = merged + t_boxes
+
+    while any(mergeable(j0,k0) for j0,k0 in combinations(boxes_to_check, r=2)):
+        merged = []
+        t_boxes = copy.deepcopy(boxes_to_check)
+        for j,k in combinations(boxes_to_check, r=2):
+            if mergeable(j,k):
+                merged.append(list(merge(j,k)))
+                try:
+                    t_boxes.remove(j)
+                except ValueError:
+                    pass
+                try:
+                    t_boxes.remove(k)
+                except ValueError:
+                    pass
+                break
+        boxes_to_check = t_boxes + merged
+    
+    return boxes_to_check
 
 
 def mergeable(box1, box2, x_val=100, y_val=100):
@@ -141,7 +169,7 @@ final_boxes = []
 max_area = []
 
 results = model.predict(
-    ["starter_images/img1.jpg", 'starter_images/img2.jpg', 'starter_images/img3.jpg'], classes=[0], show_conf=False, show_labels=False
+    ["starter_images/img1.jpg", 'starter_images/img2.jpg', 'starter_images/img3.jpg'], classes=[0]
 )
 for i, r in enumerate(results):
     
@@ -149,19 +177,9 @@ for i, r in enumerate(results):
 
     bounding_boxes.extend(r.boxes.xyxy.tolist())
 
+    final_boxes = get_boxes(bounding_boxes)
 
-    for j, k in combinations(r.boxes.xyxy.tolist(), r=2):
-        if mergeable(j, k):
-            t.append(list(merge(j, k)))
-            try:
-                bounding_boxes.remove(j)
-                bounding_boxes.remove(k)
-            except ValueError:
-                pass
-
-    # print(t+bounding_boxes)
-
-    final_boxes = t+bounding_boxes
+    # final_boxes = t+bounding_boxes
 
     max_area = max(final_boxes, key=lambda coord: (coord[2]-coord[0])*(coord[3]-coord[1]))
 
