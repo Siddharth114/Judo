@@ -159,7 +159,7 @@ def main():
 
     # cap = cv2.VideoCapture('starter_images/vid1.mp4') #longer video
     # cap = cv2.VideoCapture('starter_images/vid2.mp4') #shorter video
-    cap = cv2.VideoCapture('starter_images/vid3.mp4') #video with mulitple players
+    cap = cv2.VideoCapture('starter_images/vid3.mp4') #video with multiple players
 
     while cap.isOpened():
         bounding_boxes=[]
@@ -191,9 +191,6 @@ def main():
                 tracked = False
 
             # box_to_crop = [1153, 552, 1859, 1537]
-
-            
-
 
             annotated_frame = draw_boxes(t+bounding_boxes, frame, box_to_crop, tracked)
             
