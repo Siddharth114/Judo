@@ -38,7 +38,6 @@ def mergeable(box1, box2, x_val=100, y_val=100):
     
     return intersection_check and dimension_check
 
-
 def get_boxes(boxes):
     
     merged = []
@@ -91,9 +90,9 @@ minx_w = lambda x1, w1, x2, w2: w1 if x1 <= x2 else w2
 miny_h = lambda y1, h1, y2, h2: h1 if y1 <= y2 else h2
 
 
-def draw_boxes(t, img, coords_to_crop):
+def draw_boxes(t, img, coords_to_crop, tracked):
     if not t:
-        img = crop_and_add(t, img)
+        img = crop_and_add(t, img, tracked)
         return img
     for i in t:
         (x1,y1,x2,y2,) = i
@@ -104,14 +103,17 @@ def draw_boxes(t, img, coords_to_crop):
         img = cv2.rectangle(
             img, start_point, end_point, color=(0,0,255), thickness=5
         )
-    fin_img = crop_and_add(coords_to_crop, img)
+    fin_img = crop_and_add(coords_to_crop[-1], img, tracked)
     # cv2.imwrite(f'starter_images/merged{ind}.jpg', img)
     # fin_img = Image.fromarray(im_arr[..., ::-1])
     # fin_img.show()
     return fin_img
 
-def crop_and_add(coords, img):
-
+def crop_and_add(coords, img, tracked):
+    if not tracked:
+        border = 200
+    else:
+        border = 50
     height, width, channels = img.shape
 
     black_rectangle = np.zeros((height, width, channels), dtype=img.dtype)
@@ -124,10 +126,12 @@ def crop_and_add(coords, img):
 
     else:
         xmin, ymin, xmax, ymax = coords
-        xmin = max(0,xmin-50)
-        ymin = max(0, ymin-50)
-        xmax = min(img.shape[1],xmax+50)
-        ymax = min(img.shape[0],ymax+50)
+        xmin = max(0,xmin-border)
+        ymin = max(0, ymin-border)
+        xmax = min(img.shape[1],xmax+border)
+        ymax = min(img.shape[0],ymax+border)
+
+        print(coords)
 
         x_overlay = int(width)
         y_overlay = 0
@@ -178,13 +182,20 @@ def main():
             
             final_boxes = get_boxes(r.boxes.xyxy.tolist())
 
+            box_to_crop = []
+
             if final_boxes:
-                max_area = max(final_boxes, key=lambda coord: (coord[2]-coord[0])*(coord[3]-coord[1]))
+                box_to_crop.append(max(final_boxes, key=lambda coord: (coord[2]-coord[0])*(coord[3]-coord[1])))
+                tracked = True
             else:
-                max_area = []
+                tracked = False
+
+            # box_to_crop = [1153, 552, 1859, 1537]
+
+            
 
 
-            annotated_frame = draw_boxes(t+bounding_boxes, frame, max_area)
+            annotated_frame = draw_boxes(t+bounding_boxes, frame, box_to_crop, tracked)
             
             
             # annotated_frame = results[0].plot()
@@ -209,14 +220,14 @@ frames = main()
 
 # writing the annotated frames to a video
 
-video_name = "starter_images/merged_cropped_output1.mp4"
-fps = 15
-fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-frame_size = (2560, 720)
+# video_name = "starter_images/merged_cropped_output1.mp4"
+# fps = 15
+# fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+# frame_size = (2560, 720)
 
-writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
+# writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
 
-for frame in frames:
-    writer.write(frame)
+# for frame in frames:
+#     writer.write(frame)
 
-writer.release()
+# writer.release()

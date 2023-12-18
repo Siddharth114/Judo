@@ -148,6 +148,8 @@ def crop_and_add(coords, img, ind):
     xmax = min(img.shape[1],xmax+50)
     ymax = min(img.shape[0],ymax+50)
 
+    print(list(map(int, [xmin, xmax, ymin, ymax])))
+
     cropped_image = img[int(ymin):int(ymax), int(xmin):int(xmax)]
 
     cropped_aspect_ratio = cropped_image.shape[1] / cropped_image.shape[0]
@@ -169,7 +171,7 @@ final_boxes = []
 max_area = []
 
 results = model.predict(
-    ["starter_images/img1.jpg", 'starter_images/img2.jpg', 'starter_images/img3.jpg'], classes=[0]
+    ["starter_images/img1.jpg", 'starter_images/img2.jpg', 'starter_images/img3.jpg', 'starter_images/img4.jpg'], classes=[0]
 )
 for i, r in enumerate(results):
     
@@ -182,6 +184,8 @@ for i, r in enumerate(results):
     # final_boxes = t+bounding_boxes
 
     max_area = max(final_boxes, key=lambda coord: (coord[2]-coord[0])*(coord[3]-coord[1]))
+
+    # print(list(map(int, max_area)))
 
     draw_boxes(final_boxes, cv2.imread(f"starter_images/img{i+1}.jpg"), i+1, max_area)
 
