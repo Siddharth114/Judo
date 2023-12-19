@@ -86,10 +86,6 @@ def merge(box1, box2):
     return x_min, y_min, x_max, y_max
 
 
-minx_w = lambda x1, w1, x2, w2: w1 if x1 <= x2 else w2
-miny_h = lambda y1, h1, y2, h2: h1 if y1 <= y2 else h2
-
-
 def draw_boxes(t, img, coords_to_crop, tracked):
     if not t:
         img = crop_and_add(t, img, tracked)
@@ -190,7 +186,6 @@ def main():
             else:
                 tracked = False
 
-            # box_to_crop = [1153, 552, 1859, 1537]
 
             annotated_frame = draw_boxes(t+bounding_boxes, frame, box_to_crop, tracked)
             
