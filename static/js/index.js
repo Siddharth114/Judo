@@ -36,9 +36,14 @@ video.addEventListener('click', (event) => {
     // Extract image data as Base64 string
     const imageData = canvas.toDataURL('image/png');
 
-    console.log(imageData)
-  
     // Use the image data (e.g., display it in an image element)
     const snapshotElement = document.getElementById('snapshot');
     snapshotElement.src = imageData;
+
+    $.ajax({
+        url:'/process',
+        type:'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ 'value': imageData })
+    });
   });
