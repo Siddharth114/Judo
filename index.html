@@ -6,8 +6,17 @@
     <title>Zooming Video</title>
 </head>
 <body>
-    <video controls>
+    <video id="vid">
         <source src="starter_images/walking_vid_output1.mp4" type="video/mp4">
     </video>
+    <div>
+    </div>
+    <button id="playpause" onclick="play()">Play/pause</button>
+    <p>X: <span id="x-value"></span></p>
+    <p>Y: <span id="y-value"></span></p>
+    <br>
+    <p>Video X: <span id="vid-x-value"></span></p>
+    <p>Video Y: <span id="vid-y-value"></span></p>
+    <script src="index.js"></script>
 </body>
 </html>
