@@ -9,7 +9,7 @@ def draw_boxes(img, coords):
         end_point = (int(x2), int(y2))
 
         img = cv2.rectangle(
-            img, start_point, end_point, color=(0,0,255), thickness=5
+            img, start_point, end_point, color=(0,0,255), thickness=3
         )
     cv2.imshow('Person Detection', img)
     return img
@@ -23,7 +23,6 @@ def main():
     video_path = "starter_images/walking_vid.mp4"
 
     cap = cv2.VideoCapture(video_path)
-
     while cap.isOpened():
         success, frame = cap.read()
 
@@ -50,12 +49,12 @@ def main():
     cap.release()
     cv2.destroyAllWindows()
 
-    return frames
+    return frames, bounding_boxes
 
 
-frames = main()
+frames, bounding_boxes = main()
 
-# video_name = "starter_images/walking_vid_output.mp4"
+# video_name = "starter_images/walking_vid_output_unprocessed.mp4"
 # fps = 20
 # fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 # frame_size = (1280,720)
