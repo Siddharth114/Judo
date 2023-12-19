@@ -55,14 +55,14 @@ def main():
 
 frames = main()
 
-video_name = "starter_images/walking_vid_output.mp4"
-fps = 20
-fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-frame_size = (1280,720)
+# video_name = "starter_images/walking_vid_output.mp4"
+# fps = 20
+# fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+# frame_size = (1280,720)
 
-writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
+# writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
 
-for frame in frames:
-    writer.write(frame)
+# for frame in frames:
+#     writer.write(frame)
 
-writer.release()
+# writer.release()
