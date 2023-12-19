@@ -7,7 +7,7 @@
 </head>
 <body>
     <video id="video" width="1000">
-        <source src="../starter_images/walking_vid_output.mp4" type="video/mp4">
+        <source src="{{ url_for('static', filename='imgs/walking_vid_output.mp4') }}" type="video/mp4">
     </video>
     <div id="controls">
         <button id="playpause" onclick="play()">Play/pause</button>
@@ -16,8 +16,7 @@
     <p>Video X: <span id="vid-x-value"></span></p>
     <p>Video Y: <span id="vid-y-value"></span></p>
     <!-- <div class="frame"><span id="currentFrame">0</span></div> -->
-    <script src="index.js"></script>
-
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     <div>
         <img id="snapshot" width="1000"></img>
     </div>
