@@ -46,8 +46,8 @@ def process():
     stopped_frame = decode_save(frame_data)
 
     # difference_arr = stopped_frame - frames[0]
-    # cv2.imwrite('original_first_frame.jpg', frames[0])
-    # cv2.imwrite('stopped_frame.jpg', stopped_frame)
+    # cv2.imwrite('starter_images/original_first_frame.jpg', frames[0])
+    # cv2.imwrite('starter_images/stopped_frame.jpg', stopped_frame)
     frame_matched = zooming.matching_frame(frames, stopped_frame)
     print(stopped_frame.shape, frame_matched)
     processed_image = {
@@ -60,5 +60,5 @@ if __name__=='__main__':
     
     frames, bounding_boxes, original_width, original_height, fps = zooming.get_frames(video_path)  #used to run the model and get boxes for the video    
     output_video_path = '/Users/siddharth/Code/Python/Judo/static/imgs/walking_vid_output.mp4'
-    # zooming.write_video(frames, output_video_path, original_width, original_height, fps)
+    zooming.write_video(frames, output_video_path, original_width, original_height, fps)
     app.run(port=8000)
