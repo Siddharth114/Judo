@@ -21,8 +21,8 @@ video.addEventListener('click', (event) => {
     var rect = event.target.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    document.getElementById('vid-x-value').textContent = x
-    document.getElementById('vid-y-value').textContent = y
+    // document.getElementById('vid-x-value').textContent = x      //display x coordinates of mouse click
+    // document.getElementById('vid-y-value').textContent = y      //display y coordinates of mouse click
 
     // Get video dimensions
     const videoWidth = video.videoWidth;

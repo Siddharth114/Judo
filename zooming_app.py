@@ -9,9 +9,9 @@ app = Flask(__name__)
 def decode_save(base64_str):
     data=base64_str.replace(' ','+')
     imgdata = base64.b64decode(data)
-    filename = 'starter_images/img_from_site.jpg'  # I assume you have a way of picking unique filenames
-    with open(filename, 'wb') as f:
-            f.write(imgdata)
+    filename = 'starter_images/img_from_site.jpg'
+    # with open(filename, 'wb') as f:       # write image to file
+    #         f.write(imgdata)                          
 
 @app.route('/')
 def home():
@@ -19,13 +19,11 @@ def home():
 
 @app.route('/process', methods=['POST'])
 def process():
-    print('test')
     output = request.get_json()
     result = output['value']
     mouse_x = output['mouseX']
     mouse_y = output['mouseY']
     decode_save(result)
-    print(mouse_x, mouse_y)
     return result
 
 if __name__=='__main__':

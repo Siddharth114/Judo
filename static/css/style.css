@@ -1,0 +1,14 @@
+.media-container-row {
+    display: flex;
+  }
+  
+.column {
+    width: 50%; /* adjust widths as needed */
+    padding: 5px;
+  }
+
+
+#controls {
+justify-content: center;
+  align-items: center;
+}
