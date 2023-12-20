@@ -7,10 +7,11 @@ from PIL import Image
 app = Flask(__name__)
 
 def decode_save(base64_str):
-    binary_data = base64.b64decode(base64_str)
-    image_buffer = BytesIO(binary_data)
-    image = Image.open(image_buffer)
-
+    data=base64_str.replace(' ','+')
+    imgdata = base64.b64decode(data)
+    filename = 'starter_images/img_from_site.jpg'  # I assume you have a way of picking unique filenames
+    with open(filename, 'wb') as f:
+            f.write(imgdata)
 
 @app.route('/')
 def home():
@@ -21,9 +22,9 @@ def process():
     print('test')
     output = request.get_json()
     result = output['value']
-    # decode_save(result)
+    decode_save(result)
     # print(result, type(result))
     return result
 
 if __name__=='__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8000)

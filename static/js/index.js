@@ -1,6 +1,5 @@
 var video = document.getElementById("video");
 const frameNumberElement = document.getElementById('frameNumber');
-const fps = 20
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -32,7 +31,7 @@ video.addEventListener('click', (event) => {
   
     // Draw current frame onto canvas
     ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
-  
+    console.log(typeof(video), video)
     // Extract image data as Base64 string
     const imageData = canvas.toDataURL('image/png');
 
@@ -40,10 +39,12 @@ video.addEventListener('click', (event) => {
     const snapshotElement = document.getElementById('snapshot');
     snapshotElement.src = imageData;
 
+    var data = imageData.split(',')[1];
+
     $.ajax({
         url:'/process',
         type:'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ 'value': imageData })
+        data: JSON.stringify({ 'value': data })
     });
   });
