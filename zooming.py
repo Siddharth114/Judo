@@ -15,12 +15,11 @@ def draw_boxes(img, coords):
     return img
 
 
-model = YOLO('yolov8n.pt')
-conf_thresh = 0.5
-def main():
+def get_frames(video_path):
     model = YOLO('yolov8n.pt')
     frames=[]
-    video_path = "starter_images/walking_vid.mp4"
+    bounding_boxes = []
+    # video_path = "starter_images/walking_vid.mp4"
 
     cap = cv2.VideoCapture(video_path)
     while cap.isOpened():
@@ -30,10 +29,10 @@ def main():
             # Run YOLOv8 inference on the frame
             results = model.predict(frame, classes=[0], show_conf=False, show_labels=False)
 
-            bounding_boxes = results[0].boxes.xyxy.tolist()
+            bounding_boxes.append(results[0].boxes.xyxy.tolist())
 
             # Visualize the results on the frame
-            annotated_frame = draw_boxes(frame, bounding_boxes)
+            annotated_frame = draw_boxes(frame, bounding_boxes[-1])
 
             frames.append(annotated_frame)
 
@@ -49,23 +48,62 @@ def main():
     cap.release()
     cv2.destroyAllWindows()
 
-    return frames, bounding_boxes
+    height, width = frames[0].shape[0], frames[0].shape[1]
+
+    return frames, bounding_boxes, width, height
 
 
-frames, bounding_boxes = main()
+def write_video(frames, video_path, width, height):
+    # video_name = "static/imgs/walking_vid_output.mp4"
+    fps = 25
+    fourcc = cv2.VideoWriter_fourcc(*'avc1')
+    # height, width = frames[0].shape[0], frames[0].shape[1]
 
-video_name = "static/imgs/walking_vid_output.mp4"
-fps = 20
-fourcc = cv2.VideoWriter_fourcc(*'avc1')
-width, height = frames[0].shape[:2]
+    frame_size=(width, height)
 
-frame_size=(1280, 720)
+    # print(frames[0].shape)
 
-print(frames[0].shape)
+    writer = cv2.VideoWriter(video_path, fourcc, fps, frame_size)
 
-writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
+    for frame in frames:
+        writer.write(frame)
 
-for frame in frames:
-    writer.write(frame)
+    writer.release()
 
-writer.release()
+def translate_coords(mouse_x, mouse_y, vid_width, vid_height, original_width, original_height):
+    new_x = mouse_x * (original_width / vid_width)
+    new_y = mouse_y * (original_height / vid_height)
+
+    return new_x, new_y
+
+
+def check_inside_box(bounding_boxes, x, y):
+    for box in sorted(bounding_boxes, key=lambda x:(x[1]-x[0])*(x[1]-x[0])):
+        x_tl, y_tl, x_br, y_br = box
+        if (x_tl <= x <= x_br) and (y_tl <= y <= y_br):
+            return box
+    return False
+
+def cropped_img(frame, boxes, x, y):
+    inside_box = check_inside_box(boxes, x, y)
+    if not inside_box:
+        return False
+    
+    xmin, ymin, xmax, ymax = inside_box
+    xmin = max(0,xmin-50)
+    ymin = max(0, ymin-50)
+    xmax = min(frame.shape[1],xmax+50)
+    ymax = min(frame.shape[0],ymax+50)
+    
+    cropped_image = frame[int(ymin):int(ymax), int(xmin):int(xmax)]
+
+    return cropped_image
+
+
+def matching_frame(frames, frame):
+    return frame in frames
+
+
+if __name__=='__main__':
+    # frames, bounding_boxes, width, height = get_frames('starter_images/walking_vid.mp4')
+    pass
