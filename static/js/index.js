@@ -21,6 +21,9 @@ video.addEventListener('click', (event) => {
     var rect = event.target.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
+    var vid_width = rect.width
+    var vid_height = rect.height
+    console.log(event.target.getBoundingClientRect())
     // document.getElementById('vid-x-value').textContent = x      //display x coordinates of mouse click
     // document.getElementById('vid-y-value').textContent = y      //display y coordinates of mouse click
 
@@ -48,6 +51,6 @@ video.addEventListener('click', (event) => {
         url:'/process',
         type:'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ 'value': data , 'mouseX':x, 'mouseY':y})
+        data: JSON.stringify({ 'value': data , 'mouseX':x, 'mouseY':y, 'vidWidth':vid_width, 'vidHeight':vid_height})
     });
   });
