@@ -22,8 +22,10 @@ def process():
     print('test')
     output = request.get_json()
     result = output['value']
+    mouse_x = output['mouseX']
+    mouse_y = output['mouseY']
     decode_save(result)
-    # print(result, type(result))
+    print(mouse_x, mouse_y)
     return result
 
 if __name__=='__main__':

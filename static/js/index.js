@@ -13,14 +13,17 @@ function play() {
 }
 
 document.getElementById("video").onclick = function(e) {
-    var rect = e.target.getBoundingClientRect();
-    var x = e.clientX - rect.left;
-    var y = e.clientY - rect.top;
-    document.getElementById('vid-x-value').textContent = x
-    document.getElementById('vid-y-value').textContent = y
+    
 }
 
 video.addEventListener('click', (event) => {
+
+    var rect = event.target.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+    document.getElementById('vid-x-value').textContent = x
+    document.getElementById('vid-y-value').textContent = y
+
     // Get video dimensions
     const videoWidth = video.videoWidth;
     const videoHeight = video.videoHeight;
@@ -31,7 +34,6 @@ video.addEventListener('click', (event) => {
   
     // Draw current frame onto canvas
     ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
-    console.log(typeof(video), video)
     // Extract image data as Base64 string
     const imageData = canvas.toDataURL('image/png');
 
@@ -40,11 +42,12 @@ video.addEventListener('click', (event) => {
     snapshotElement.src = imageData;
 
     var data = imageData.split(',')[1];
+    console.log(x, y)
 
     $.ajax({
         url:'/process',
         type:'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ 'value': data })
+        data: JSON.stringify({ 'value': data , 'mouseX':x, 'mouseY':y})
     });
   });
