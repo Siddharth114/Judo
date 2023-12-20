@@ -11,7 +11,7 @@ def draw_boxes(img, coords):
         img = cv2.rectangle(
             img, start_point, end_point, color=(0,0,255), thickness=3
         )
-    cv2.imshow('Person Detection', img)
+    # cv2.imshow('Person Detection', img)
     return img
 
 
@@ -54,14 +54,18 @@ def main():
 
 frames, bounding_boxes = main()
 
-# video_name = "starter_images/walking_vid_output_unprocessed.mp4"
-# fps = 20
-# fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-# frame_size = (1280,720)
+video_name = "static/imgs/walking_vid_output.mp4"
+fps = 20
+fourcc = cv2.VideoWriter_fourcc(*'avc1')
+width, height = frames[0].shape[:2]
 
-# writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
+frame_size=(1280, 720)
 
-# for frame in frames:
-#     writer.write(frame)
+print(frames[0].shape)
 
-# writer.release()
+writer = cv2.VideoWriter(video_name, fourcc, fps, frame_size)
+
+for frame in frames:
+    writer.write(frame)
+
+writer.release()

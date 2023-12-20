@@ -20,11 +20,13 @@ def home():
 @app.route('/process', methods=['POST'])
 def process():
     output = request.get_json()
-    result = output['value']
+    frame_data = output['img']
     mouse_x = output['mouseX']
     mouse_y = output['mouseY']
-    decode_save(result)
-    return result
+    vid_width = output['vidWidth']
+    vid_height = output['vidHeight']
+    decode_save(frame_data)
+    return frame_data
 
 if __name__=='__main__':
     app.run(debug=True, port=8000)
