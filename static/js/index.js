@@ -51,7 +51,7 @@ video.addEventListener('click', (event) => {
         contentType: 'application/json',
         data: JSON.stringify({ 'img': data , 'mouseX':x, 'mouseY':y, 'vidWidth':vid_width, 'vidHeight':vid_height}),
         success: function (response) {
-            document.getElementById('output-image').textContent = response.image
+            document.getElementById('output-image').src = response.image
         },
         error: function(error) {
             console.error(error);

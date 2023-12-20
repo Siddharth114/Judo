@@ -1,6 +1,7 @@
 from ultralytics import YOLO
 import cv2
 from PIL import Image
+import numpy as np
 
 def draw_boxes(img, coords):
     for i in coords:
@@ -22,6 +23,7 @@ def get_frames(video_path):
     # video_path = "starter_images/walking_vid.mp4"
 
     cap = cv2.VideoCapture(video_path)
+    original_fps = cap.get(cv2.CAP_PROP_FPS)
     while cap.isOpened():
         success, frame = cap.read()
 
@@ -50,12 +52,12 @@ def get_frames(video_path):
 
     height, width = frames[0].shape[0], frames[0].shape[1]
 
-    return frames, bounding_boxes, width, height
+    return frames, bounding_boxes, width, height, original_fps
 
 
-def write_video(frames, video_path, width, height):
+def write_video(frames, video_path, width, height, fps):
+    print(fps)
     # video_name = "static/imgs/walking_vid_output.mp4"
-    fps = 25
     fourcc = cv2.VideoWriter_fourcc(*'avc1')
     # height, width = frames[0].shape[0], frames[0].shape[1]
 
@@ -101,7 +103,11 @@ def cropped_img(frame, boxes, x, y):
 
 
 def matching_frame(frames, frame):
-    return frame in frames
+    for list_frame in frames:
+        if np.all(frame == list_frame):
+            return True
+    return False
+
 
 
 if __name__=='__main__':

@@ -5,18 +5,27 @@ from io import BytesIO
 from PIL import Image
 import zooming
 import numpy as np
+import cv2
+import pickle
 
 app = Flask(__name__)
 
 def decode_save(base64_str):
     data=base64_str.replace(' ','+')
     imgdata = base64.b64decode(data)
-    img_array = np.frombuffer(imgdata, dtype=np.uint8)
+
+    img_array = cv2.imdecode(np.frombuffer(imgdata, dtype=np.uint8), flags=cv2.IMREAD_COLOR)
     return img_array
 
     # filename = 'starter_images/img_from_site.jpg'
     # with open(filename, 'wb') as f:       # write image to file
-    #         f.write(imgdata)                          
+    #         f.write(imgdata)            
+
+def numpy_array_to_base64(frame, format="jpeg"):
+    success, encoded_bytes = cv2.imencode(".jpg", frame)
+    base64_string = base64.b64encode(encoded_bytes).decode("utf-8")
+    data_uri = f"data:image/jpeg;base64,{base64_string}"
+    return data_uri        
 
 @app.route('/')
 def home():
@@ -36,16 +45,20 @@ def process():
 
     stopped_frame = decode_save(frame_data)
 
+    # difference_arr = stopped_frame - frames[0]
+    # cv2.imwrite('original_first_frame.jpg', frames[0])
+    # cv2.imwrite('stopped_frame.jpg', stopped_frame)
     frame_matched = zooming.matching_frame(frames, stopped_frame)
-    print(frame_matched)
+    print(stopped_frame.shape, frame_matched)
     processed_image = {
-        'image': frame_matched
+        'image': numpy_array_to_base64(stopped_frame)
     }
     return jsonify(processed_image)
 
 if __name__=='__main__':
     video_path = 'starter_images/walking_vid.mp4'
-    frames, bounding_boxes, original_width, original_height = zooming.get_frames(video_path)  #used to run the model and get boxes for the video
+    
+    frames, bounding_boxes, original_width, original_height, fps = zooming.get_frames(video_path)  #used to run the model and get boxes for the video    
     output_video_path = '/Users/siddharth/Code/Python/Judo/static/imgs/walking_vid_output.mp4'
-    zooming.write_video(frames, output_video_path, original_width, original_height)
+    # zooming.write_video(frames, output_video_path, original_width, original_height, fps)
     app.run(port=8000)

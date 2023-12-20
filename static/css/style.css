@@ -1,17 +1,17 @@
-.media-container-row {
+/* .media-container-row {
     display: flex;
   }
   
 .column {
-    width: 50%; /* adjust widths as needed */
+    width: 50%;
   }
 
-#video, #snapshot {
-  border: 1px solid #000; /* adjust thickness and color */
-}
+/* #video, #snapshot {
+  border: 1px solid #000; 
+} */
 
 
-#controls {
+/* #controls {
   display: flex;
 justify-content: center;
   align-items: center;
@@ -20,4 +20,4 @@ justify-content: center;
 #playpause {
   height:100px;
   width:250px;
-}
+} */
