@@ -4,11 +4,16 @@
   
 .column {
     width: 50%; /* adjust widths as needed */
-    padding: 5px;
+    padding: 10px;
   }
+
+#video, #snapshot {
+  border: 1px solid #000; /* adjust thickness and color */
+}
 
 
 #controls {
+  display: flex;
 justify-content: center;
   align-items: center;
 }
