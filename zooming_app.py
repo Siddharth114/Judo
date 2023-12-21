@@ -8,18 +8,7 @@ import numpy as np
 import cv2
 import pickle
 
-app = Flask(__name__)
-
-# def decode_save(base64_str):
-#     data=base64_str.replace(' ','+')
-#     imgdata = base64.b64decode(data)
-
-#     img_array = cv2.imdecode(np.frombuffer(imgdata, dtype=np.uint8), flags=cv2.IMREAD_COLOR)
-#     return img_array
-
-    # filename = 'starter_images/img_from_site.jpg'
-    # with open(filename, 'wb') as f:       # write image to file
-    #         f.write(imgdata)            
+app = Flask(__name__)   
 
 def numpy_array_to_base64(frame, format="jpeg"):
     success, encoded_bytes = cv2.imencode(".jpg", frame)
@@ -45,7 +34,11 @@ def process():
     
     new_x, new_y = zooming.translate_coords(mouse_x, mouse_y, vid_width, vid_height, original_width, original_height)
 
-    cropped_image = zooming.cropped_img(stopped_frame, boxes, new_x, new_y)
+    cropped_image, box_to_track = zooming.cropped_img(stopped_frame, boxes, new_x, new_y)
+
+    cropped_frames = zooming.generate_cropped_frames(frames, bounding_boxes, box_to_track)
+    cropped_frames_path = '/Users/siddharth/Code/Python/Judo/static/imgs/cropped_frames_output.mp4'
+    zooming.write_video(cropped_frames, cropped_frames_path, original_width, original_height, fps)
 
     processed_image = {
         'image': numpy_array_to_base64(cropped_image),

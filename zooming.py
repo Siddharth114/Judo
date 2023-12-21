@@ -67,7 +67,8 @@ def write_video(frames, video_path, width, height, fps):
     writer = cv2.VideoWriter(video_path, fourcc, fps, frame_size)
 
     for frame in frames:
-        writer.write(frame)
+        frame_to_write = fit_to_resolution(frame, width, height)
+        writer.write(frame_to_write)
 
     writer.release()
 
@@ -77,18 +78,17 @@ def translate_coords(mouse_x, mouse_y, vid_width, vid_height, original_width, or
 
     return new_x, new_y
 
-
-def check_inside_box(bounding_boxes, x, y):
+def check_inside_box(bounding_boxes, x, y): #returns the box that the coordinate is inside
     for box in bounding_boxes:
         x_tl, y_tl, x_br, y_br = box
         if (x_tl <= x <= x_br) and (y_tl <= y <= y_br):
             return box
     return False
 
-def cropped_img(frame, boxes, x, y):
+def cropped_img(frame, boxes, x, y): #current frame, list of boxes for each frame, coordinates. returns cropped image
     inside_box = check_inside_box(boxes, x, y)
     if not inside_box:
-        return frame
+        return frame, False
     
     xmin, ymin, xmax, ymax = inside_box
     xmin = max(0,xmin-50)
@@ -98,8 +98,7 @@ def cropped_img(frame, boxes, x, y):
     
     cropped_image = frame[int(ymin):int(ymax), int(xmin):int(xmax)]
 
-    return cropped_image
-
+    return cropped_image, inside_box
 
 def matching_frame(frames, frame):
     for list_frame in frames:
@@ -107,7 +106,55 @@ def matching_frame(frames, frame):
             return True
     return False
 
+def generate_cropped_frames(frames, boxes, box_to_track):
+    cropped_frames = [crop_box_from_frame(frames[0], box_to_track)]
+    for curr_frame, next_frame in zip(frames, frames[1:]):
+        next_box = get_next_frame_box(curr_frame, next_frame, box_to_track, boxes)
+        cropped_frames.append(crop_box_from_frame(next_frame, next_box))
 
+    return cropped_frames
+
+
+def crop_box_from_frame(frame, box):
+    xmin, ymin, xmax, ymax = box
+    xmin = max(0,xmin-50)
+    ymin = max(0, ymin-50)
+    xmax = min(frame.shape[1],xmax+50)
+    ymax = min(frame.shape[0],ymax+50)
+
+    cropped_image = frame[int(ymin):int(ymax), int(xmin):int(xmax)]
+    return cropped_image
+
+
+
+def get_next_frame_box(frame1, frame2, box_to_track, boxes):
+    threshold_distance = 5
+    threshold_area = 0.2
+    center1 = np.mean(box_to_track, axis=0)
+    for box in boxes:
+        center2 = np.mean(box, axis=0)
+        distance = np.linalg.norm(center1 - center2)
+        if distance>threshold_distance:
+            continue
+        return box
+    return box_to_track #returns old frame if no new one is detected
+
+
+def fit_to_resolution(frame, width, height):
+
+    frame_height, frame_width = frame.shape[:2]
+
+    if frame_height < height or frame_width < width:  # Frame is smaller, pad with black bars
+        result = np.zeros((height, width, 3), dtype=frame.dtype)  # Create black canvas
+        start_y = (height - frame_height) // 2
+        start_x = (width - frame_width) // 2
+        result[start_y:start_y+frame_height, start_x:start_x+frame_width] = frame
+    elif frame_height > height or frame_width > width:  # Frame is bigger, downsize
+        result = cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
+    else:  # Frame is already the correct size, return as is
+        result = frame
+
+    return result
 
 if __name__=='__main__':
     # frames, bounding_boxes, width, height = get_frames('starter_images/walking_vid.mp4')
