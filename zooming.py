@@ -80,7 +80,8 @@ def translate_coords(mouse_x, mouse_y, vid_width, vid_height, original_width, or
 
 
 def check_inside_box(bounding_boxes, x, y):
-    for box in sorted(bounding_boxes, key=lambda x:(x[1]-x[0])*(x[1]-x[0])):
+    for box in bounding_boxes:
+        print(box)
         x_tl, y_tl, x_br, y_br = box
         if (x_tl <= x <= x_br) and (y_tl <= y <= y_br):
             return box
@@ -89,7 +90,7 @@ def check_inside_box(bounding_boxes, x, y):
 def cropped_img(frame, boxes, x, y):
     inside_box = check_inside_box(boxes, x, y)
     if not inside_box:
-        return False
+        return frame
     
     xmin, ymin, xmax, ymax = inside_box
     xmin = max(0,xmin-50)

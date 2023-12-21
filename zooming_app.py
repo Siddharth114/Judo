@@ -39,22 +39,19 @@ def process():
     vid_width = output['vidWidth']
     vid_height = output['vidHeight']
     current_frame = output['frameNumber']
-    # new_x, new_y = zooming.translate_coords(mouse_x, mouse_y, vid_width, vid_height, original_width, original_height)
-
-    # cropped_image = zooming.cropped_img(frame_data, bounding_boxes, new_x, new_y)
-
+    
     stopped_frame = frames[current_frame]
+    boxes = bounding_boxes[current_frame]
+    
+    new_x, new_y = zooming.translate_coords(mouse_x, mouse_y, vid_width, vid_height, original_width, original_height)
 
-    # difference_arr = stopped_frame - frames[0]
-    # cv2.imwrite('starter_images/original_first_frame.jpg', frames[0])
-    # cv2.imwrite('starter_images/stopped_frame.jpg', stopped_frame)
-    # frame_matched = zooming.matching_frame(frames, stopped_frame)
-    # print(stopped_frame.shape, frame_matched)
-
+    cropped_image = zooming.cropped_img(stopped_frame, boxes, new_x, new_y)
 
     processed_image = {
-        'image': numpy_array_to_base64(stopped_frame)
+        'image': numpy_array_to_base64(cropped_image),
+        'msg': 'did not click inside a box'
     }
+
     return jsonify(processed_image)
 
 if __name__=='__main__':

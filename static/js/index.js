@@ -29,23 +29,6 @@ video.addEventListener('click', (event) => {
     // document.getElementById('vid-x-value').textContent = x      //display x coordinates of mouse click
     // document.getElementById('vid-y-value').textContent = y      //display y coordinates of mouse click
 
-    // Get video dimensions
-    const videoWidth = video.videoWidth;
-    const videoHeight = video.videoHeight;
-  
-    // Set canvas size to match video dimensions
-    canvas.width = videoWidth;
-    canvas.height = videoHeight;
-  
-    // Draw current frame onto canvas
-    ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
-    // Extract image data as Base64 string
-    const imageData = canvas.toDataURL('image/png');
-
-    // Use the image data (e.g., display it in an image element)
-    // const snapshotElement = document.getElementById('snapshot');
-    // snapshotElement.src = imageData;
-
     $.ajax({
         url:'/process',
         type:'POST',
@@ -53,7 +36,7 @@ video.addEventListener('click', (event) => {
         data: JSON.stringify({'mouseX':x, 'mouseY':y, 'vidWidth':vid_width, 'vidHeight':vid_height, 'frameNumber':currentFrame}),
         success: function (response) {
             document.getElementById('snapshot').src = response.image
-            // document.getElementById('output-image').src = response.image
+            document.getElementById('output-states').textContent = response.msg
         },
         error: function(error) {
             console.error(error);
