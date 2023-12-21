@@ -1,4 +1,4 @@
-/* .media-container-row {
+.media-container-row {
     display: flex;
   }
   
@@ -6,12 +6,12 @@
     width: 50%;
   }
 
-/* #video, #snapshot {
+#video, #snapshot {
   border: 1px solid #000; 
-} */
+}
 
 
-/* #controls {
+#controls {
   display: flex;
 justify-content: center;
   align-items: center;
@@ -20,4 +20,4 @@ justify-content: center;
 #playpause {
   height:100px;
   width:250px;
-} */
+}

@@ -11,6 +11,7 @@
         <video id="video" class="column">
             <source src="{{ url_for('static', filename='imgs/walking_vid_output.mp4') }}" type="video/mp4">
 
+            <img id="snapshot"  class="column"></img>
         </video>
         
     </div>
@@ -19,7 +20,6 @@
         <button id="playpause" onclick="play()">Play/pause</button>
     </div>
     <br>
-    <img id="snapshot"  class="column"></img>
     
     <!-- <p>Video X: <span id="vid-x-value"></span></p>
     <p>Video Y: <span id="vid-y-value"></span></p> -->    

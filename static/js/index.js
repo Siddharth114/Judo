@@ -12,11 +12,14 @@ function play() {
     }
 }
 
-document.getElementById("video").onclick = function(e) {
-    
-}
-
 video.addEventListener('click', (event) => {
+
+    const currentTime = video.currentTime;
+    // console.log(video.videoTracks[0])
+    // const fps = video.playbackRate * video.videoTracks[0].fps;
+    const fps = 25;
+    const currentFrame = Math.floor(currentTime * fps);
+
 
     var rect = event.target.getBoundingClientRect();
     var x = event.clientX - rect.left;
@@ -49,7 +52,7 @@ video.addEventListener('click', (event) => {
         url:'/process',
         type:'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ 'img': data , 'mouseX':x, 'mouseY':y, 'vidWidth':vid_width, 'vidHeight':vid_height}),
+        data: JSON.stringify({ 'img': data , 'mouseX':x, 'mouseY':y, 'vidWidth':vid_width, 'vidHeight':vid_height, 'frameNumber':currentFrame}),
         success: function (response) {
             document.getElementById('output-image').src = response.image
         },
