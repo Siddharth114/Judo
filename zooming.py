@@ -54,9 +54,8 @@ def get_frames(video_path):
 
     return frames, bounding_boxes, width, height, original_fps
 
-
 def write_video(frames, video_path, width, height, fps):
-    print(fps)
+    # print(fps)
     # video_name = "static/imgs/walking_vid_output.mp4"
     fourcc = cv2.VideoWriter_fourcc(*'avc1')
     # height, width = frames[0].shape[0], frames[0].shape[1]
@@ -81,7 +80,6 @@ def translate_coords(mouse_x, mouse_y, vid_width, vid_height, original_width, or
 
 def check_inside_box(bounding_boxes, x, y):
     for box in bounding_boxes:
-        print(box)
         x_tl, y_tl, x_br, y_br = box
         if (x_tl <= x <= x_br) and (y_tl <= y <= y_br):
             return box
