@@ -7,9 +7,11 @@ const ctx = canvas.getContext('2d');
 function play() {
     if(video.paused) {
         video.play();
+        output_vid.play();
     }
     else {
         video.pause();
+        output_vid.pause();
     }
 }
 
@@ -27,8 +29,6 @@ video.addEventListener('click', (event) => {
     var y = event.clientY - rect.top;
     var vid_width = rect.width
     var vid_height = rect.height
-    // document.getElementById('vid-x-value').textContent = x      //display x coordinates of mouse click
-    // document.getElementById('vid-y-value').textContent = y      //display y coordinates of mouse click
 
     $.ajax({
         url:'/process',
@@ -36,8 +36,8 @@ video.addEventListener('click', (event) => {
         contentType: 'application/json',
         data: JSON.stringify({'mouseX':x, 'mouseY':y, 'vidWidth':vid_width, 'vidHeight':vid_height, 'frameNumber':currentFrame}),
         success: function (response) {
-            document.getElementById('snapshot').src = response.image
-            document.getElementById('output-video-path').src = response.output_vid_path
+            // console.log(response.vid_path)
+            document.getElementById('output-video-path').src = response.vid_path
         },
         error: function(error) {
             console.error(error);

@@ -29,7 +29,7 @@ def get_frames(video_path):
 
         if success:
             # Run YOLOv8 inference on the frame
-            results = model.predict(frame, classes=[0], show_conf=False, show_labels=False)
+            results = model.predict(frame, classes=[0], show_conf=False, show_labels=False, verbose=False)
 
             bounding_boxes.append(results[0].boxes.xyxy.tolist())
 
@@ -88,7 +88,7 @@ def check_inside_box(bounding_boxes, x, y): #returns the box that the coordinate
 def cropped_img(frame, boxes, x, y): #current frame, list of boxes for each frame, coordinates. returns cropped image
     inside_box = check_inside_box(boxes, x, y)
     if not inside_box:
-        return frame, False
+        return frame, boxes[0][0]
     
     xmin, ymin, xmax, ymax = inside_box
     xmin = max(0,xmin-50)
@@ -110,7 +110,7 @@ def generate_cropped_frames(frames, boxes, box_to_track):
     cropped_frames = [crop_box_from_frame(frames[0], box_to_track)]
     prev_box = box_to_track
     for ind, (curr_frame, next_frame) in enumerate(zip(frames, frames[1:])):
-        next_box = get_next_frame_box(curr_frame, next_frame, prev_box, boxes[ind])
+        next_box = get_next_frame_box(prev_box, boxes[ind])
         prev_box = next_box
         cropped_frames.append(crop_box_from_frame(next_frame, next_box))
 
@@ -129,7 +129,7 @@ def crop_box_from_frame(frame, box):
 
 
 
-def get_next_frame_box(frame1, frame2, box_to_track, boxes):
+def get_next_frame_box(box_to_track, boxes):
     threshold_distance = 10
     x1,y1,x2,y2 = box_to_track
     center1 = ((x2+x1)/2, (y2+y1)/2)

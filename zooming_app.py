@@ -36,16 +36,16 @@ def process():
 
     cropped_image, box_to_track = zooming.cropped_img(stopped_frame, stopped_boxes, new_x, new_y)
 
-    cropped_frames = zooming.generate_cropped_frames(frames, bounding_boxes, box_to_track)
+    cropped_frames = zooming.generate_cropped_frames(frames[current_frame:], bounding_boxes[current_frame:], box_to_track)
     output_video_name = 'cropped_video_output'
     cropped_frames_path = f'/Users/siddharth/Code/Python/Judo/static/imgs/{output_video_name}.mp4'
     zooming.write_video(cropped_frames, cropped_frames_path, original_width, original_height, fps)
 
-    js_output_vid_path = f"{{ url_for('static', filename='imgs/{output_video_name}.mp4') }}"
+    js_vid_path = "{{ url_for('static', filename='imgs/cropped_video_output.mp4') }}"
 
     processed_image = {
-        'image': numpy_array_to_base64(cropped_image),
-        'output_vid_path': js_output_vid_path
+        'vid_path': js_vid_path
+
     }
 
     return jsonify(processed_image)

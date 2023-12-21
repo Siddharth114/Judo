@@ -6,7 +6,7 @@
     width: 50%;
   }
 
-#video, #snapshot {
+#video, #output-video {
   border: 1px solid #000; 
 }
 
