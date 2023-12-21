@@ -30,11 +30,11 @@ def process():
     current_frame = output['frameNumber']
     
     stopped_frame = frames[current_frame]
-    boxes = bounding_boxes[current_frame]
+    stopped_boxes = bounding_boxes[current_frame]
     
     new_x, new_y = zooming.translate_coords(mouse_x, mouse_y, vid_width, vid_height, original_width, original_height)
 
-    cropped_image, box_to_track = zooming.cropped_img(stopped_frame, boxes, new_x, new_y)
+    cropped_image, box_to_track = zooming.cropped_img(stopped_frame, stopped_boxes, new_x, new_y)
 
     cropped_frames = zooming.generate_cropped_frames(frames, bounding_boxes, box_to_track)
     cropped_frames_path = '/Users/siddharth/Code/Python/Judo/static/imgs/cropped_frames_output.mp4'
