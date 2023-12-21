@@ -43,18 +43,17 @@ video.addEventListener('click', (event) => {
     const imageData = canvas.toDataURL('image/png');
 
     // Use the image data (e.g., display it in an image element)
-    const snapshotElement = document.getElementById('snapshot');
-    snapshotElement.src = imageData;
-
-    var data = imageData.split(',')[1];
+    // const snapshotElement = document.getElementById('snapshot');
+    // snapshotElement.src = imageData;
 
     $.ajax({
         url:'/process',
         type:'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ 'img': data , 'mouseX':x, 'mouseY':y, 'vidWidth':vid_width, 'vidHeight':vid_height, 'frameNumber':currentFrame}),
+        data: JSON.stringify({'mouseX':x, 'mouseY':y, 'vidWidth':vid_width, 'vidHeight':vid_height, 'frameNumber':currentFrame}),
         success: function (response) {
-            document.getElementById('output-image').src = response.image
+            document.getElementById('snapshot').src = response.image
+            // document.getElementById('output-image').src = response.image
         },
         error: function(error) {
             console.error(error);

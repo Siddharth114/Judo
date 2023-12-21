@@ -34,7 +34,6 @@ def home():
 @app.route('/process', methods=['POST'])
 def process():
     output = request.get_json()
-    frame_data = output['img']
     mouse_x = output['mouseX']
     mouse_y = output['mouseY']
     vid_width = output['vidWidth']
