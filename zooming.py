@@ -108,8 +108,10 @@ def matching_frame(frames, frame):
 
 def generate_cropped_frames(frames, boxes, box_to_track):
     cropped_frames = [crop_box_from_frame(frames[0], box_to_track)]
+    prev_box = box_to_track
     for ind, (curr_frame, next_frame) in enumerate(zip(frames, frames[1:])):
-        next_box = get_next_frame_box(curr_frame, next_frame, box_to_track, boxes[ind])
+        next_box = get_next_frame_box(curr_frame, next_frame, prev_box, boxes[ind])
+        prev_box = next_box
         cropped_frames.append(crop_box_from_frame(next_frame, next_box))
 
     return cropped_frames
@@ -129,11 +131,9 @@ def crop_box_from_frame(frame, box):
 
 def get_next_frame_box(frame1, frame2, box_to_track, boxes):
     threshold_distance = 10
-    threshold_area = 0.2
     x1,y1,x2,y2 = box_to_track
     center1 = ((x2+x1)/2, (y2+y1)/2)
     for box in boxes:
-        print(box)
         x3,y3,x4,y4 = box
         center2 = ((x4+x3)/2, (y4+y3)/2)
 
