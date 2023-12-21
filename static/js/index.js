@@ -1,4 +1,5 @@
 var video = document.getElementById("video");
+var output_vid = document.getElementById("output-video")
 const frameNumberElement = document.getElementById('frameNumber');
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
@@ -36,7 +37,7 @@ video.addEventListener('click', (event) => {
         data: JSON.stringify({'mouseX':x, 'mouseY':y, 'vidWidth':vid_width, 'vidHeight':vid_height, 'frameNumber':currentFrame}),
         success: function (response) {
             document.getElementById('snapshot').src = response.image
-            document.getElementById('output-states').textContent = response.msg
+            document.getElementById('output-video-path').src = response.output_vid_path
         },
         error: function(error) {
             console.error(error);
