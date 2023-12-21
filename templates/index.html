@@ -13,9 +13,9 @@
             <source src="{{ url_for('static', filename='imgs/walking_vid_output.mp4') }}" type="video/mp4">
         </video>
 
-        <video class="column" id="output-video">
-            <source type="video/mp4" id="a">
-        </video>
+        <video class="column" id="output-video">  <!--id="output-video" -->
+            <!-- <source type="video/mp4" id="output-video-path" src="{{ url_for('static', filename='imgs/cropped_video_output.mp4') }}"> -->
+        <!-- </video> -->
 
 
         <!-- <img id="snapshot"  class="column"></img> snapshot of the cropped, clicked frame--> 
@@ -26,12 +26,6 @@
     </div>
     
     <br> 
-
-    <video>
-        <source type="video/mp4" id="output-video-path">
-    </video>
-
-    <br>
     
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, url_for
 import json
 import base64
 from io import BytesIO
@@ -44,7 +44,7 @@ def process():
     js_vid_path = "{{ url_for('static', filename='imgs/cropped_video_output.mp4') }}"
 
     processed_image = {
-        'vid_path': js_vid_path
+        'vid_path': url_for('static', filename='imgs/cropped_video_output.mp4')
 
     }
 

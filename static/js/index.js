@@ -37,10 +37,12 @@ video.addEventListener('click', (event) => {
         data: JSON.stringify({'mouseX':x, 'mouseY':y, 'vidWidth':vid_width, 'vidHeight':vid_height, 'frameNumber':currentFrame}),
         success: function (response) {
             // console.log(response.vid_path)
-            document.getElementById('output-video-path').src = response.vid_path
+            output_vid.src = response.vid_path
         },
         error: function(error) {
             console.error(error);
           }
     });
   });
+
+  console.log(output_vid.src)
