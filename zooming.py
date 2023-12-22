@@ -130,7 +130,7 @@ def crop_box_from_frame(frame, box):
 
 
 def get_next_frame_box(box_to_track, boxes):
-    threshold_distance = 10
+    threshold_distance = 20
     x1,y1,x2,y2 = box_to_track
     center1 = ((x2+x1)/2, (y2+y1)/2)
     for box in boxes:

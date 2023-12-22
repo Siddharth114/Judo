@@ -45,4 +45,21 @@ video.addEventListener('click', (event) => {
     });
   });
 
-  console.log(output_vid.src)
+function deleteFileAndReload() {
+    fetch('/delete-file', {
+        method: 'POST'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('File deletion failed');
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log('File deleted successfully:', data);
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error deleting file:', error);
+    });
+}
