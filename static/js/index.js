@@ -58,7 +58,7 @@ video.addEventListener("click", (event) => {
       frameNumber: currentFrame,
     }),
     success: function (response) {
-      // console.log(response.vid_path)
+        console.log(response.vid_path)
       output_vid.src = response.vid_path;
     },
     error: function (error) {

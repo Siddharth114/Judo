@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, url_for
+from flask import Flask, render_template, request, jsonify, url_for, send_file
 import json
 import base64
 from io import BytesIO
@@ -7,6 +7,7 @@ import zooming
 import numpy as np
 import cv2
 import os
+import time
 
 app = Flask(__name__)
 
@@ -46,16 +47,19 @@ def process():
     cropped_frames = zooming.generate_cropped_frames(
         frames[current_frame:], bounding_boxes[current_frame:], box_to_track
     )
-    output_video_name = "cropped_video_output"
+    unique_suffix = str(time.time())
+    output_video_name = f"cropped_video_output{unique_suffix}"
+    global cropped_frames_path
     cropped_frames_path = (
         f"/Users/siddharth/Code/Python/Judo/static/imgs/{output_video_name}.mp4"
     )
     zooming.write_video(
         cropped_frames, cropped_frames_path, original_width, original_height, fps
     )
+    unique_suffix = str(time.time())
 
     processed_image = {
-        "vid_path": url_for("static", filename="imgs/cropped_video_output.mp4")
+        "vid_path": url_for('static', filename=f'imgs/{output_video_name}.mp4')
     }
 
     return jsonify(processed_image)
@@ -63,9 +67,8 @@ def process():
 
 @app.route("/delete-file", methods=["POST"])
 def delete_file():
-    file_path = "/Users/siddharth/Code/Python/Judo/static/imgs/cropped_video_output.mp4"  # Replace with the actual file path
     try:
-        os.remove(file_path)
+        os.remove(cropped_frames_path)
         return "File deleted successfully"
     except OSError as e:
         return f"Error deleting file: {e}", 500
