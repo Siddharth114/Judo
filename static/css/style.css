@@ -1,22 +1,24 @@
 .media-container-row {
-    display: flex;
-  }
-  
-.column {
-    width: 50%;
-  }
+  display: flex;
+}
 
-#video, #output-video {
-  border: 1px solid #000; 
+.column {
+  width: 50%;
+}
+
+#video,
+#output-video {
+  border: 1px solid #000;
 }
 
 #controls {
   display: flex;
-justify-content: center;
+  justify-content: center;
   align-items: center;
 }
 
-#playpause, #refresh {
-  height:100px;
-  width:250px;
+#playpause,
+#refresh {
+  height: 100px;
+  width: 250px;
 }
