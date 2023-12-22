@@ -15,6 +15,25 @@ function play() {
     }
 }
 
+function deleteFileAndReload() {
+    fetch('/delete-file', {
+        method: 'POST'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('File deletion failed');
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log('File deleted successfully:', data);
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error deleting file:', error);
+    });
+}
+
 video.addEventListener('click', (event) => {
 
     const currentTime = video.currentTime;
@@ -45,21 +64,3 @@ video.addEventListener('click', (event) => {
     });
   });
 
-function deleteFileAndReload() {
-    fetch('/delete-file', {
-        method: 'POST'
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('File deletion failed');
-        }
-        return response.text();
-    })
-    .then(data => {
-        console.log('File deleted successfully:', data);
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error deleting file:', error);
-    });
-}
