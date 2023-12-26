@@ -108,7 +108,7 @@ def cropped_img(
     inside_box = check_inside_box(boxes, x, y)
     # if the mouse click is not inside the box, return the frame with the first box in the list of boxes
     if not inside_box:
-        return frame, boxes[0][0]
+        return frame, boxes[0][0], False
 
     # getting coordinates of the bounding box
     xmin, ymin, xmax, ymax = inside_box
@@ -120,7 +120,7 @@ def cropped_img(
     # cropping the image with some padding around the person
     cropped_image = frame[int(ymin) : int(ymax), int(xmin) : int(xmax)]
 
-    return cropped_image, inside_box
+    return cropped_image, inside_box, True
 
 
 # generating cropped frames where the frame is zoomed in on the selected person

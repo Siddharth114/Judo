@@ -46,9 +46,15 @@ def process():
     )
 
     # getting the box inside which the user clicked
-    cropped_image, box_to_track = zooming.cropped_img(
+    cropped_image, box_to_track, cropped_status = zooming.cropped_img(
         stopped_frame, stopped_boxes, new_x, new_y
     )
+    
+    if not cropped_status:
+        processed_result = {
+            'status': 'False'
+        }
+        return jsonify(processed_result)
 
     # generating cropped frames given the box to track across the video
     cropped_frames = zooming.generate_cropped_frames(
@@ -70,7 +76,8 @@ def process():
 
     # sending a response to the js file with the path to the video
     processed_image = {
-        "vid_path": url_for('static', filename=f'imgs/{output_video_name}.mp4')
+        "vid_path": url_for('static', filename=f'imgs/{output_video_name}.mp4'),
+        'status': 'True'
     }
 
     return jsonify(processed_image)
