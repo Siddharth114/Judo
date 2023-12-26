@@ -37,7 +37,11 @@ function deleteFileAndReload() {
 
 // sending current frame number to backend when the user clicks on the video
 video.addEventListener("click", (event) => {
-
+  is_paused = video.paused;
+  if (!is_paused) {
+    video.pause();
+    output_vid.pause();
+  }
   document.getElementById('loading-screen').style.display = 'block'; // Show loading screen
   const currentTime = video.currentTime;
   // console.log(video.videoTracks[0])
@@ -65,10 +69,18 @@ video.addEventListener("click", (event) => {
     success: function (response) {
       output_vid.src = response.vid_path;
       document.getElementById('loading-screen').style.display = 'none';
+      if (!is_paused) {
+        video.play();
+        output_vid.play();
+      }
     },
     error: function (error) {
       console.error(error);
       document.getElementById('loading-screen').style.display = 'none';
+      if (!is_paused) {
+        video.play();
+        output_vid.play();
+      }
     },
   });
 });
