@@ -37,6 +37,8 @@ function deleteFileAndReload() {
 
 // sending current frame number to backend when the user clicks on the video
 video.addEventListener("click", (event) => {
+
+  document.getElementById('loading-screen').style.display = 'block'; // Show loading screen
   const currentTime = video.currentTime;
   // console.log(video.videoTracks[0])
   // const fps = video.playbackRate * video.videoTracks[0].fps;
@@ -61,11 +63,12 @@ video.addEventListener("click", (event) => {
       frameNumber: currentFrame,
     }),
     success: function (response) {
-        console.log(response.vid_path)
       output_vid.src = response.vid_path;
+      document.getElementById('loading-screen').style.display = 'none';
     },
     error: function (error) {
       console.error(error);
+      document.getElementById('loading-screen').style.display = 'none';
     },
   });
 });

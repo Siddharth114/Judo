@@ -24,6 +24,10 @@
     <div id="controls">
         <button id="refresh" onclick="deleteFileAndReload()">Refresh</button>
     </div>
+
+    <div id="loading-screen" style="display: none;">
+        <p>Processing request...</p>
+      </div>
     
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>

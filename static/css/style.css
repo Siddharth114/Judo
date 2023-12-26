@@ -11,7 +11,7 @@
   border: 1px solid #000;
 }
 
-#controls {
+#controls{
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,4 +21,14 @@
 #refresh {
   height: 100px;
   width: 250px;
+}
+
+#loading-screen {
+  text-align: center; 
+  margin: 0 auto;     
+  font-weight: bold;  
+}
+
+#loading-screen p {
+  font-weight: bold;  
 }
