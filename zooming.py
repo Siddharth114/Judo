@@ -1,10 +1,10 @@
 from ultralytics import YOLO
 import cv2
-from PIL import Image
 import numpy as np
 
-
+# drawing bounding boxes given the coordinates from the yolo model
 def draw_boxes(img, coords):
+    # iterating over each of the boxes and getting the coordinates of the bounding boxes
     for i in coords:
         (
             x1,
@@ -14,17 +14,18 @@ def draw_boxes(img, coords):
         ) = i
         start_point = (int(x1), int(y1))
         end_point = (int(x2), int(y2))
-
+        # drawing a rectangle in the coordinates where the bounding box is supposed to be. the original drawing using yolov8 has the class label which is not required
         img = cv2.rectangle(img, start_point, end_point, color=(0, 0, 255), thickness=3)
     # cv2.imshow('Person Detection', img)
     return img
 
 
+# get frames of video with people detected
 def get_frames(video_path):
+    # initializing the model
     model = YOLO("yolov8n.pt")
     frames = []
     bounding_boxes = []
-    # video_path = "starter_images/walking_vid.mp4"
 
     cap = cv2.VideoCapture(video_path)
     original_fps = cap.get(cv2.CAP_PROP_FPS)
@@ -57,19 +58,15 @@ def get_frames(video_path):
     cv2.destroyAllWindows()
 
     height, width = frames[0].shape[0], frames[0].shape[1]
-
+    # return data related to the video back to the flask app file
     return frames, bounding_boxes, width, height, original_fps
 
 
+# multi-purpose video writing funtion with cv2
 def write_video(frames, video_path, width, height, fps):
-    # print(fps)
-    # video_name = "static/imgs/walking_vid_output.mp4"
     fourcc = cv2.VideoWriter_fourcc(*"avc1")
-    # height, width = frames[0].shape[0], frames[0].shape[1]
 
     frame_size = (width, height)
-
-    # print(frames[0].shape)
 
     writer = cv2.VideoWriter(video_path, fourcc, fps, frame_size)
 
@@ -80,18 +77,22 @@ def write_video(frames, video_path, width, height, fps):
     writer.release()
 
 
+# translating coordinates to adjust for the size change of the video
 def translate_coords(
     mouse_x, mouse_y, vid_width, vid_height, original_width, original_height
 ):
+    # calculating new coordinates of the mouse click to adjust for the change in size of the video
     new_x = mouse_x * (original_width / vid_width)
     new_y = mouse_y * (original_height / vid_height)
 
     return new_x, new_y
 
 
+#check if the clicked point is inside a bounding box
 def check_inside_box(
     bounding_boxes, x, y
-):  # returns the box that the coordinate is inside
+):  
+    # iterating through all the boxes of the frame and returning which box the mouse click is inside
     for box in bounding_boxes:
         x_tl, y_tl, x_br, y_br = box
         if (x_tl <= x <= x_br) and (y_tl <= y <= y_br):
@@ -99,32 +100,32 @@ def check_inside_box(
     return False
 
 
+#returns cropped image given the clicked point and list of boxes for that frame
 def cropped_img(
     frame, boxes, x, y
-):  # current frame, list of boxes for each frame, coordinates. returns cropped image
+):
+    # first checking if the mouse click is inside a bounding box
     inside_box = check_inside_box(boxes, x, y)
+    # if the mouse click is not inside the box, return the frame with the first box in the list of boxes
     if not inside_box:
         return frame, boxes[0][0]
 
+    # getting coordinates of the bounding box
     xmin, ymin, xmax, ymax = inside_box
     xmin = max(0, xmin - 50)
     ymin = max(0, ymin - 50)
     xmax = min(frame.shape[1], xmax + 50)
     ymax = min(frame.shape[0], ymax + 50)
 
+    # cropping the image with some padding around the person
     cropped_image = frame[int(ymin) : int(ymax), int(xmin) : int(xmax)]
 
     return cropped_image, inside_box
 
 
-def matching_frame(frames, frame):
-    for list_frame in frames:
-        if np.all(frame == list_frame):
-            return True
-    return False
-
-
+# generating cropped frames where the frame is zoomed in on the selected person
 def generate_cropped_frames(frames, boxes, box_to_track):
+    # initializing a list of frames which are zooming in on the box to track
     cropped_frames = [crop_box_from_frame(frames[0], box_to_track)]
     prev_box = box_to_track
     for ind, (curr_frame, next_frame) in enumerate(zip(frames, frames[1:])):
@@ -135,6 +136,7 @@ def generate_cropped_frames(frames, boxes, box_to_track):
     return cropped_frames
 
 
+# crop the selected bounding box from the frame with some padding around it
 def crop_box_from_frame(frame, box):
     xmin, ymin, xmax, ymax = box
     xmin = max(0, xmin - 50)
@@ -146,6 +148,7 @@ def crop_box_from_frame(frame, box):
     return cropped_image
 
 
+# get the box which is closest to the box from the previous frame
 def get_next_frame_box(box_to_track, boxes):
     threshold_distance = 20
     x1, y1, x2, y2 = box_to_track
@@ -163,6 +166,7 @@ def get_next_frame_box(box_to_track, boxes):
     return box_to_track  # returns old frame if no new one is detected
 
 
+# given the cropped image, return an image padded with black bars so the final video is of constant size
 def fit_to_resolution(frame, width, height):
     frame_height, frame_width = frame.shape[:2]
 

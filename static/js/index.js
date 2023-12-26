@@ -4,6 +4,7 @@ const frameNumberElement = document.getElementById("frameNumber");
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 
+// play/pause button behaviour
 function play() {
   if (video.paused) {
     video.play();
@@ -14,6 +15,7 @@ function play() {
   }
 }
 
+//deleting the generated video with zoomed frames when the user presses the refresh button
 function deleteFileAndReload() {
   fetch("/delete-file", {
     method: "POST",
@@ -33,6 +35,7 @@ function deleteFileAndReload() {
     });
 }
 
+// sending current frame number to backend when the user clicks on the video
 video.addEventListener("click", (event) => {
   const currentTime = video.currentTime;
   // console.log(video.videoTracks[0])
