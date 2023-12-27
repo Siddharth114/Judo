@@ -4,7 +4,7 @@ const frameNumberElement = document.getElementById("frameNumber");
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 
-// console.log(original_fps)
+console.log(original_fps)
 
 // play/pause button behaviour
 function play() {
