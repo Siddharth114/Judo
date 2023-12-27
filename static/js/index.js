@@ -17,6 +17,11 @@ function play() {
   }
 }
 
+function nextFrame() {
+  video.currentTime += 1 / original_fps;
+  output_vid.currentTime += 1/original_fps;
+}
+
 //deleting the generated video with zoomed frames when the user presses the refresh button
 function deleteFileAndReload() {
   fetch("/delete-file", {
