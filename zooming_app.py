@@ -22,7 +22,8 @@ def numpy_array_to_base64(frame):
 #rendering the home page
 @app.route("/")
 def home():
-    return render_template("index.html")
+    data = {'fps': fps}
+    return render_template("index.html", data=data)
 
 
 # creating the video with cropped frames when the user clicks on a person
@@ -98,6 +99,7 @@ if __name__ == "__main__":
     # video path of the video to be used
     video_path = "starter_images/walking_vid.mp4"
     # getting data after the yolo v8 mdoel is run on the video
+    global fps
     frames, bounding_boxes, original_width, original_height, fps = zooming.get_frames(
         video_path
     )
