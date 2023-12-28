@@ -14,7 +14,8 @@ def draw_boxes(img, coords):
         ) = i
         start_point = (int(x1), int(y1))
         end_point = (int(x2), int(y2))
-        # drawing a rectangle in the coordinates where the bounding box is supposed to be. the original drawing using yolov8 has the class label which is not required
+        # drawing a rectangle in the coordinates where the bounding box is supposed to be. the original drawing using 
+        # yolov8 has the class label which is not required
         img = cv2.rectangle(img, start_point, end_point, color=(0, 0, 255), thickness=3)
     # cv2.imshow('Person Detection', img)
     return img
@@ -168,51 +169,51 @@ def get_next_frame_box(box_to_track, boxes):
 
 # given the cropped image, return an image padded with black bars so the final video is of constant size. the cropped image is of the 
 # same size as that of the original video
-def fit_to_resolution(frame, width, height):
-    frame_height, frame_width = frame.shape[:2]
-
-    if (
-        frame_height < height or frame_width < width
-    ):  # Frame is smaller, pad with black bars
-        result = np.zeros((height, width, 3), dtype=frame.dtype)  # Create black canvas
-        start_y = (height - frame_height) // 2
-        start_x = (width - frame_width) // 2
-        result[
-            start_y : start_y + frame_height, start_x : start_x + frame_width
-        ] = frame
-    elif frame_height > height or frame_width > width:  # Frame is bigger, downsize
-        result = cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
-    else:  # Frame is already the correct size, return as is
-        result = frame
-
-    return result
-
-# The cropped image is made as big as possible while fitting inside the video window.
 # def fit_to_resolution(frame, width, height):
 #     frame_height, frame_width = frame.shape[:2]
-#     frame_aspect_ratio = frame_width / frame_height  # Calculate original aspect ratio
-#     target_aspect_ratio = width / height              # Calculate target aspect ratio
 
-#     # Determine scaling factor based on aspect ratios:
-#     if frame_aspect_ratio > target_aspect_ratio:
-#         scaling_factor = width / frame_width
-#     else:
-#         scaling_factor = height / frame_height
-
-#     # Scale the frame while preserving aspect ratio:
-#     scaled_width = int(frame_width * scaling_factor)
-#     scaled_height = int(frame_height * scaling_factor)
-#     scaled_frame = cv2.resize(frame, (scaled_width, scaled_height), interpolation=cv2.INTER_AREA)
-
-#     # Create a black canvas with the target dimensions:
-#     result = np.zeros((height, width, 3), dtype=scaled_frame.dtype)
-
-#     # Center the scaled frame within the canvas:
-#     start_y = (height - scaled_height) // 2
-#     start_x = (width - scaled_width) // 2
-#     result[start_y: start_y + scaled_height, start_x: start_x + scaled_width] = scaled_frame
+#     if (
+#         frame_height < height or frame_width < width
+#     ):  # Frame is smaller, pad with black bars
+#         result = np.zeros((height, width, 3), dtype=frame.dtype)  # Create black canvas
+#         start_y = (height - frame_height) // 2
+#         start_x = (width - frame_width) // 2
+#         result[
+#             start_y : start_y + frame_height, start_x : start_x + frame_width
+#         ] = frame
+#     elif frame_height > height or frame_width > width:  # Frame is bigger, downsize
+#         result = cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
+#     else:  # Frame is already the correct size, return as is
+#         result = frame
 
 #     return result
+
+# The cropped image is made as big as possible while fitting inside the video window.
+def fit_to_resolution(frame, width, height):
+    frame_height, frame_width = frame.shape[:2]
+    frame_aspect_ratio = frame_width / frame_height  # Calculate original aspect ratio
+    target_aspect_ratio = width / height             # Calculate target aspect ratio
+
+    # Determine scaling factor based on aspect ratios:
+    if frame_aspect_ratio > target_aspect_ratio:
+        scaling_factor = width / frame_width
+    else:
+        scaling_factor = height / frame_height
+
+    # Scale the frame while preserving aspect ratio:
+    scaled_width = int(frame_width * scaling_factor)
+    scaled_height = int(frame_height * scaling_factor)
+    scaled_frame = cv2.resize(frame, (scaled_width, scaled_height), interpolation=cv2.INTER_AREA)
+
+    # Create a black canvas with the target dimensions:
+    result = np.zeros((height, width, 3), dtype=scaled_frame.dtype)
+
+    # Center the scaled frame within the canvas:
+    start_y = (height - scaled_height) // 2
+    start_x = (width - scaled_width) // 2
+    result[start_y: start_y + scaled_height, start_x: start_x + scaled_width] = scaled_frame
+
+    return result
 
 
 if __name__ == "__main__":
