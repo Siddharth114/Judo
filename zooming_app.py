@@ -8,17 +8,6 @@ import time
 app = Flask(__name__)
 
 
-# converting a numpy array of an image to base64 encoding
-def numpy_array_to_base64(frame):
-    # encoding the numpy array of the frame to jpg format
-    success, encoded_bytes = cv2.imencode(".jpg", frame)
-    # encoding it into base64
-    base64_string = base64.b64encode(encoded_bytes).decode("utf-8")
-    # formatting it for js
-    data_uri = f"data:image/jpeg;base64,{base64_string}"
-    return data_uri
-
-
 #rendering the home page
 @app.route("/")
 def home():

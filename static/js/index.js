@@ -95,3 +95,5 @@ video.addEventListener("click", (event) => {
     },
   });
 });
+
+video.addEventListener('ended', deleteFileAndReload, false)
