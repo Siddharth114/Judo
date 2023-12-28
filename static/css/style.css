@@ -29,7 +29,7 @@
 /* #playpause,
 #next-frame {
   width: 30%
-} */
+} un-comment this if using next frame button */
 
 #loading-screen {
   text-align: center; 

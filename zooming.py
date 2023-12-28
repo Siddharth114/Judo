@@ -14,8 +14,8 @@ def draw_boxes(img, coords):
         ) = i
         start_point = (int(x1), int(y1))
         end_point = (int(x2), int(y2))
-        # drawing a rectangle in the coordinates where the bounding box is supposed to be. the original drawing using 
-        # yolov8 has the class label which is not required
+        # drawing a rectangle in the coordinates where the bounding box is supposed to be. 
+        # the original drawing using yolov8 has the class label which is not required
         img = cv2.rectangle(img, start_point, end_point, color=(0, 0, 255), thickness=3)
     # cv2.imshow('Person Detection', img)
     return img
