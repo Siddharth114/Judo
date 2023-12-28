@@ -68,7 +68,7 @@ def process():
     global cropped_frames_path
     # setting the path of the saved video
     cropped_frames_path = (
-        f"/Users/siddharth/Code/Python/Judo/static/imgs/{output_video_name}.mp4"
+        f"static/imgs/{output_video_name}.mp4"
     )
     # writing the zoomed frames into a video
     zooming.write_video(
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     )
     # path of the output video
     output_video_path = (
-        "/Users/siddharth/Code/Python/Judo/static/imgs/walking_vid_output.mp4"
+        "static/imgs/walking_vid_output.mp4"
     )
     # writing the output video
     # zooming.write_video(frames, output_video_path, original_width, original_height, fps)
