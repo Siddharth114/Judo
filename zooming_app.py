@@ -78,7 +78,6 @@ def process():
 @app.route("/delete-file", methods=["POST"])
 def delete_file():
     # removing the file when the user clicks on the refresh button
-    print(cropped_frames_path)
     try:
         os.remove(cropped_frames_path)
         return "File deleted successfully"
