@@ -29,6 +29,7 @@ function deleteFileAndReload() {
   })
     .then((response) => {
       if (!response.ok) {
+        location.reload();
         throw new Error("File deletion failed");
       }
       return response.text();
