@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request, jsonify, url_for
-import base64
 import zooming
-import cv2
 import os
 import datetime
 
