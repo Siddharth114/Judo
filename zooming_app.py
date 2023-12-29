@@ -3,13 +3,11 @@ import base64
 import zooming
 import cv2
 import os
-import time
+import datetime
 
 app = Flask(__name__)
 
 
-global cropped_frames_path
-cropped_frames_path = ''
 
 #rendering the home page
 @app.route("/")
@@ -55,9 +53,10 @@ def process():
     )
 
     # saving output video with timestamp to avoid browser caching
-    unique_suffix = str(time.time())
+    unique_suffix = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     output_video_name = f"cropped_video_output{unique_suffix}"
     # setting the path of the saved video
+    global cropped_frames_path
     cropped_frames_path = (
         f"static/imgs/{output_video_name}.mp4"
     )
@@ -78,9 +77,8 @@ def process():
 # deleting the created video after the user presses the refresh button
 @app.route("/delete-file", methods=["POST"])
 def delete_file():
-    if not os.path.exists(cropped_frames_path):
-        return 'No file to delete'
     # removing the file when the user clicks on the refresh button
+    print(cropped_frames_path)
     try:
         os.remove(cropped_frames_path)
         return "File deleted successfully"

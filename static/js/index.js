@@ -51,8 +51,6 @@ video.addEventListener("click", (event) => {
   }
   document.getElementById('loading-screen').style.display = 'block'; // Show loading screen
   const currentTime = video.currentTime;
-  // console.log(video.videoTracks[0])
-  // const fps = video.playbackRate * video.videoTracks[0].fps;
   const fps = original_fps;
   const currentFrame = Math.floor(currentTime * fps);
 
