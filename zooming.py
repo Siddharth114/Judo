@@ -1,6 +1,8 @@
 from ultralytics import YOLO
 import cv2
 import numpy as np
+import glob
+import os
 
 # drawing bounding boxes given the coordinates from the yolo model
 def draw_boxes(img, coords):
@@ -214,6 +216,11 @@ def fit_to_resolution(frame, width, height):
     result[start_y: start_y + scaled_height, start_x: start_x + scaled_width] = scaled_frame
 
     return result
+
+def wildcard_delete(pattern):
+    matching_files = glob.glob(pattern)
+    for file in matching_files:
+        os.remove(file)
 
 
 if __name__ == "__main__":
