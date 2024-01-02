@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, url_for
 import zooming
 import os
 import datetime
+import glob
 
 app = Flask(__name__)
 
@@ -17,6 +18,10 @@ def home():
 # creating the video with cropped frames when the user clicks on a person
 @app.route("/process", methods=["POST"])
 def process():
+    pattern = 'static/imgs/cropped_video_output*.mp4'
+    matching_files = glob.glob(pattern)
+    for file in matching_files:
+        os.remove(file)
     # getting the json variable of the response when the user clicks on the video
     output = request.get_json()
     mouse_x = output["mouseX"]
@@ -75,6 +80,10 @@ def process():
 # deleting the created video after the user presses the refresh button
 @app.route("/delete-file", methods=["POST"])
 def delete_file():
+    pattern = 'static/imgs/cropped_video_output*.mp4'
+    matching_files = glob.glob(pattern)
+    for file in matching_files:
+        os.remove(file)
     # removing the file when the user clicks on the refresh button
     try:
         os.remove(cropped_frames_path)
