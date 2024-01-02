@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, url_for
 import zooming
 import os
 import datetime
+import signal
 
 app = Flask(__name__)
 
@@ -17,6 +18,7 @@ def home():
 # creating the video with cropped frames when the user clicks on a person
 @app.route("/process", methods=["POST"])
 def process():
+    global pattern
     pattern = 'static/imgs/cropped_video_output*.mp4'
     zooming.wildcard_delete(pattern)
     # getting the json variable of the response when the user clicks on the video
@@ -86,6 +88,12 @@ def delete_file():
     except OSError as e:
         return f"Error deleting file: {e}", 500
 
+
+def cleanup_on_exit(signum, frame):
+    zooming.wildcard_delete(pattern)
+    exit(0)
+
+signal.signal(signal.SIGINT, cleanup_on_exit)
 
 if __name__ == "__main__":
     # video path of the video to be used
