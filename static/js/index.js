@@ -75,7 +75,6 @@ video.addEventListener("click", (event) => {
     success: function (response) {
       if (response.status=='False') {
         alert('Click inside a bounding box');
-        deleteFileAndReload();
       }
       output_vid.src = response.vid_path;
       document.getElementById('loading-screen').style.display = 'none';
