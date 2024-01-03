@@ -3,6 +3,7 @@ var output_vid = document.getElementById("output-video");
 const frameNumberElement = document.getElementById("frameNumber");
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
+const reloadButton = document.getElementById("reload");
 
 // console.log(original_fps) // variable from flask app when the site loads
 
@@ -94,4 +95,10 @@ video.addEventListener("click", (event) => {
   });
 });
 
-video.addEventListener('ended', deleteFileAndReload, false)
+video.addEventListener("ended", () => {
+  reloadButton.style.display = "block";
+});
+
+reloadButton.addEventListener("click", () => {
+  deleteFileAndReload();
+});

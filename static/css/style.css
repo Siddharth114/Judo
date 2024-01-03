@@ -21,7 +21,8 @@
 
 #playpause,
 #refresh,
-#next-frame {
+#next-frame,
+#reload {
   height: 100px;
   width: 250px;
 }
