@@ -142,7 +142,8 @@ def get_frames(video_path):
         - height (int): The height of the video frames in pixels.
         - original_fps (float): The original frames per second of the video.
     '''
-    model = YOLO("yolov8n.pt")
+    model = YOLO("yolov8n.pt") # pre-trained yolo model
+    # model = YOLO('custom_model/runs/detect/train/weights/best.pt') # engaged detection
     frames=[]
     final_boxes = []
     # Open video capture

@@ -7,6 +7,17 @@ import signal
 app = Flask(__name__)
 
 
+global INPUT_VIDEO_PATH
+INPUT_VIDEO_PATH = "starter_images/vid3.mp4"
+
+global OUTPUT_VIDEO_PATH
+OUTPUT_VIDEO_PATH = "static/imgs/judo_vid_output.mp4"
+
+global ZOOMED_VIDEO_NAME
+ZOOMED_VIDEO_NAME = 'merged_cropped_video_output'
+
+global pattern
+pattern = f'static/imgs/{ZOOMED_VIDEO_NAME}*.mp4'
 
 #rendering the home page
 @app.route("/")
@@ -18,8 +29,7 @@ def home():
 # creating the video with cropped frames when the user clicks on a person
 @app.route("/process", methods=["POST"])
 def process():
-    global pattern
-    pattern = 'static/imgs/merged_cropped_video_output*.mp4'
+    pattern = f'static/imgs/{ZOOMED_VIDEO_NAME}*.mp4'
     merged_zooming.wildcard_delete(pattern)
     # getting the json variable of the response when the user clicks on the video
     output = request.get_json()
@@ -56,7 +66,7 @@ def process():
 
     # saving output video with timestamp to avoid browser caching
     unique_suffix = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    output_video_name = f"merged_cropped_video_output{unique_suffix}"
+    output_video_name = f"{ZOOMED_VIDEO_NAME}{unique_suffix}"
     # setting the path of the saved video
     global cropped_frames_path
     cropped_frames_path = (
@@ -79,7 +89,7 @@ def process():
 # deleting the created video after the user presses the refresh button
 @app.route("/delete-file", methods=["POST"])
 def delete_file():
-    pattern = 'static/imgs/merged_cropped_video_output*.mp4'
+    pattern = f'static/imgs/{ZOOMED_VIDEO_NAME}*.mp4'
     merged_zooming.wildcard_delete(pattern)
     # removing the file when the user clicks on the refresh button
     try:
@@ -97,16 +107,14 @@ signal.signal(signal.SIGINT, cleanup_on_exit)
 
 if __name__ == "__main__":
     # video path of the video to be used
-    video_path = "starter_images/vid3.mp4"
+    video_path = INPUT_VIDEO_PATH
     # getting data after the yolo v8 mdoel is run on the video
     global fps
     frames, bounding_boxes, original_width, original_height, fps = merged_zooming.get_frames(
         video_path
     )
     # path of the output video
-    output_video_path = (
-        "static/imgs/judo_vid_output.mp4"
-    )
+    output_video_path = OUTPUT_VIDEO_PATH
     # writing the output video
     # merged_zooming.write_video(frames, output_video_path, original_width, original_height, fps)
     app.run(port=8000)
