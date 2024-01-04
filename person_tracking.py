@@ -10,17 +10,19 @@ def main():
 
     cap = cv2.VideoCapture(video_path)
 
+    fps = cap.get(cv2.CAP_PROP_FPS)
+
     while cap.isOpened():
         success, frame = cap.read()
 
         if success:
-            results = model.track(frame, persist=True, verbose=True)
+            results = model.track(frame, persist=True, verbose=False)
 
             annotated_frame = results[0].plot()
             frames.append(annotated_frame)
 
             # Display the annotated frame
-            cv2.imshow("YOLOv8 Tracking", annotated_frame)
+            # cv2.imshow("YOLOv8 Tracking", annotated_frame)
 
             # Break the loop if 'q' is pressed
             if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -32,12 +34,11 @@ def main():
     # Release the video capture object and close the display window
     cap.release()
     cv2.destroyAllWindows()
-    return frames
+    return frames, fps
 
 
-frames = main()
+frames, fps = main()
 video_name = "starter_images/people_tracking_output.mp4"
-fps = 20
 fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 height, width = frames[0].shape[0], frames[0].shape[1]
 
