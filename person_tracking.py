@@ -1,6 +1,18 @@
 from ultralytics import YOLO
 import cv2
 
+def draw_boxes(frame, boxes):
+    for i in boxes:
+        (
+            x1,
+            y1,
+            x2,
+            y2,
+        ) = i
+        start_point = (int(x1), int(y1))
+        end_point = (int(x2), int(y2))
+        frame = cv2.rectangle(frame, start_point, end_point, color=(0, 0, 255), thickness=3)
+    return frame
 
 def main():
     frames = []
@@ -18,6 +30,9 @@ def main():
         if success:
             results = model.track(frame, persist=True, verbose=False)
 
+            # bounding_boxes = results[0].boxes.xyxy.tolist()
+
+            # annotated_frame = draw_boxes(frame, bounding_boxes)
             annotated_frame = results[0].plot()
             frames.append(annotated_frame)
 
