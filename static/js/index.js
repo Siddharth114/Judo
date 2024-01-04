@@ -52,6 +52,8 @@ video.addEventListener("click", (event) => {
     output_vid.pause();
   }
   document.getElementById('loading-screen').style.display = 'block'; // Show loading screen
+  document.getElementById('playpause').disabled = true;
+  document.getElementById('refresh').disabled = true;
   const currentTime = video.currentTime;
   const fps = original_fps;
   const currentFrame = Math.floor(currentTime * fps);
@@ -79,6 +81,8 @@ video.addEventListener("click", (event) => {
       }
       output_vid.src = response.vid_path;
       document.getElementById('loading-screen').style.display = 'none';
+      document.getElementById('playpause').disabled = false;
+      document.getElementById('refresh').disabled = false;
       if (!is_paused) {
         video.play();
         output_vid.play();
@@ -87,6 +91,8 @@ video.addEventListener("click", (event) => {
     error: function (error) {
       console.error(error);
       document.getElementById('loading-screen').style.display = 'none';
+      document.getElementById('playpause').disabled = false;
+      document.getElementById('refresh').disabled = false;
       if (!is_paused) {
         video.play();
         output_vid.play();
