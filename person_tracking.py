@@ -3,15 +3,12 @@ import cv2
 
 def draw_boxes(frame, boxes):
     for i in boxes:
-        (
-            x1,
-            y1,
-            x2,
-            y2,
-        ) = i
+        xyxy, id = i
+        x1, y1, x2, y2 = xyxy
         start_point = (int(x1), int(y1))
         end_point = (int(x2), int(y2))
         frame = cv2.rectangle(frame, start_point, end_point, color=(0, 0, 255), thickness=3)
+        frame = cv2.putText(frame, str(int(id)), start_point, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
     return frame
 
 def main():
@@ -29,12 +26,17 @@ def main():
 
         if success:
             results = model.track(frame, persist=True, verbose=False)
+            bounding_boxes = []
+            xyxy = results[0].boxes.xyxy.tolist()
+            id = results[0].boxes.id.tolist()
+            for i,j in zip(xyxy, id):
+                bounding_boxes.append((i, j))
 
             # bounding_boxes = results[0].boxes.xyxy.tolist()
 
-            # annotated_frame = draw_boxes(frame, bounding_boxes)
-            annotated_frame = results[0].plot()
+            annotated_frame = draw_boxes(frame, bounding_boxes)
             frames.append(annotated_frame)
+
 
             # Display the annotated frame
             # cv2.imshow("YOLOv8 Tracking", annotated_frame)
@@ -53,7 +55,7 @@ def main():
 
 
 frames, fps = main()
-video_name = "starter_images/people_tracking_output.mp4"
+video_name = "starter_images/people_tracking_output_with_ids.mp4"
 fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 height, width = frames[0].shape[0], frames[0].shape[1]
 
