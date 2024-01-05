@@ -1,5 +1,7 @@
 from ultralytics import YOLO
 import cv2
+from collections import defaultdict
+import numpy as np
 
 def draw_boxes(frame, boxes):
     for i in boxes:
@@ -21,6 +23,8 @@ def main():
 
     fps = cap.get(cv2.CAP_PROP_FPS)
 
+    track_history = defaultdict(lambda: [])
+
     while cap.isOpened():
         success, frame = cap.read()
 
@@ -35,6 +39,19 @@ def main():
             # bounding_boxes = results[0].boxes.xyxy.tolist()
 
             annotated_frame = draw_boxes(frame, bounding_boxes)
+
+            for box, track_id in zip(results[0].boxes.xywh.cpu(), results[0].boxes.id.int().cpu().tolist()):
+                x, y, w, h = box
+                track = track_history[track_id]
+                track.append((float(x), float(y)))  # x, y center point
+                if len(track) > 30:  # retain 90 tracks for 90 frames
+                    track.pop(0)
+
+                # Draw the tracking lines
+                points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
+                cv2.polylines(annotated_frame, [points], isClosed=False, color=(0, 215, 255), thickness=3)
+
+
             frames.append(annotated_frame)
 
 
@@ -55,7 +72,7 @@ def main():
 
 
 frames, fps = main()
-video_name = "starter_images/people_tracking_output_with_ids.mp4"
+video_name = "starter_images/people_tracking_output_with_ids_and_lines.mp4"
 fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 height, width = frames[0].shape[0], frames[0].shape[1]
 
