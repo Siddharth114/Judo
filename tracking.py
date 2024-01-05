@@ -11,7 +11,7 @@ def draw_boxes(frame, boxes):
         start_point = (int(x1), int(y1))
         end_point = (int(x2), int(y2))
         frame = cv2.rectangle(frame, start_point, end_point, color=(0, 0, 255), thickness=3)
-        # frame = cv2.putText(frame, str(int(id)), start_point, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA) #writing id number above box
+        frame = cv2.putText(frame, str(int(id)), start_point, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA) #writing id number above box
     return frame
 
 def get_frames(video_path):
