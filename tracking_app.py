@@ -22,7 +22,8 @@ pattern = f'static/imgs/{ZOOMED_VIDEO_NAME}*.mp4'
 @app.route("/")
 def home():
     data = {'fps': fps}
-    return render_template("tracking_app.html", data=data)
+    path_to_send = INFERENCE_VIDEO_PATH
+    return render_template("master.html", data=data, path=path_to_send)
 
 @app.route("/process", methods=["POST"])
 def process():
@@ -56,7 +57,7 @@ def process():
     )
 
     unique_suffix = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    output_video_name = f"tracked_video_output{unique_suffix}"
+    output_video_name = f"{ZOOMED_VIDEO_NAME}{unique_suffix}"
 
     global cropped_frames_path
     cropped_frames_path = (
@@ -100,5 +101,5 @@ if __name__ == '__main__':
 
     output_video_path = INFERENCE_VIDEO_PATH
     # writing the output video
-    tracking.write_video(frames, output_video_path, original_width, original_height, fps)
+    # tracking.write_video(frames, output_video_path, original_width, original_height, fps)
     app.run(port=8000)
