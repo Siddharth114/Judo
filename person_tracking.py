@@ -70,8 +70,16 @@ def main():
     cv2.destroyAllWindows()
     return frames, fps
 
+def direct_vid():
+    model = YOLO('yolov8n.pt')
+
+    video_path = "starter_images/walking_vid.mp4"
+    results = model.track(source=video_path, show=True)
+
 
 frames, fps = main()
+
+# writing the video
 video_name = "starter_images/people_tracking_output_with_ids_and_lines.mp4"
 fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 height, width = frames[0].shape[0], frames[0].shape[1]
@@ -84,3 +92,5 @@ for frame in frames:
     writer.write(frame)
 
 writer.release()
+    
+# direct_vid()
