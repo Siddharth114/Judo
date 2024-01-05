@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import glob
 import os
+from collections import defaultdict
 
 def draw_boxes(frame, boxes):
     for i in boxes:
@@ -20,6 +21,7 @@ def get_frames(video_path):
     cap = cv2.VideoCapture(video_path)
     original_fps = cap.get(cv2.CAP_PROP_FPS)
     final_bounding_boxes = []
+    track_history = defaultdict(lambda: [])
     while cap.isOpened():
         success, frame = cap.read()
 
@@ -32,6 +34,19 @@ def get_frames(video_path):
                 bounding_boxes.append((i, j))
             final_bounding_boxes.append(bounding_boxes)
             annotated_frame = draw_boxes(frame, bounding_boxes)
+            
+            # tracking lines for each person
+            for box, track_id in zip(results[0].boxes.xywh.cpu(), results[0].boxes.id.int().cpu().tolist()):
+                x, y, w, h = box
+                track = track_history[track_id]
+                track.append((float(x), float(y)))  # x, y center point
+                if len(track) > 30:  # retain 90 tracks for 90 frames
+                    track.pop(0)
+
+                # Draw the tracking lines
+                points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
+                cv2.polylines(annotated_frame, [points], isClosed=False, color=(0, 215, 255), thickness=3)
+
             frames.append(annotated_frame)
 
 
