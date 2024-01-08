@@ -29,7 +29,7 @@ def main():
         success, frame = cap.read()
 
         if success:
-            results = model.track(frame, persist=True, verbose=False, tracker='botsort.yaml')
+            results = model.track(frame, persist=True, verbose=False, tracker='bytetrack.yaml')
             bounding_boxes = []
             xyxy = results[0].boxes.xyxy.tolist()
             id = results[0].boxes.id.tolist()
@@ -80,7 +80,7 @@ def direct_vid():
 frames, fps = main()
 
 # writing the video
-video_name = "starter_images/walking_vid_tracked_output.mp4"
+video_name = "starter_images/walking_vid_tracked_output_bytetrack.mp4"
 fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 height, width = frames[0].shape[0], frames[0].shape[1]
 
