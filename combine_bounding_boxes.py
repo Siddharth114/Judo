@@ -1,6 +1,5 @@
 from ultralytics import YOLO
 import cv2
-from PIL import Image
 from itertools import combinations
 import numpy as np
 import copy
