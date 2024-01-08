@@ -17,7 +17,7 @@ def main():
     frames = []
     model = YOLO('yolov8n.pt')
 
-    video_path = "starter_images/vid1.mp4"
+    video_path = "starter_images/walking_vid.mp4"
 
     cap = cv2.VideoCapture(video_path)
 
@@ -29,7 +29,7 @@ def main():
         success, frame = cap.read()
 
         if success:
-            results = model.track(frame, persist=True, verbose=False)
+            results = model.track(frame, persist=True, verbose=False, tracker='botsort.yaml')
             bounding_boxes = []
             xyxy = results[0].boxes.xyxy.tolist()
             id = results[0].boxes.id.tolist()
@@ -56,7 +56,7 @@ def main():
 
 
             # Display the annotated frame
-            cv2.imshow("YOLOv8 Tracking", annotated_frame)
+            # cv2.imshow("YOLOv8 Tracking", annotated_frame)
 
             # Break the loop if 'q' is pressed
             if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -80,7 +80,7 @@ def direct_vid():
 frames, fps = main()
 
 # writing the video
-video_name = "starter_images/vid1_tracked_output.mp4"
+video_name = "starter_images/walking_vid_tracked_output.mp4"
 fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 height, width = frames[0].shape[0], frames[0].shape[1]
 
