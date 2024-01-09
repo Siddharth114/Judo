@@ -26,7 +26,7 @@ def get_frames(video_path):
         success, frame = cap.read()
 
         if success:
-            results = model.track(frame, persist=True, verbose=False)
+            results = model.track(frame, persist=True, verbose=False, tracker='bytetrack.yaml')
             bounding_boxes = []
             xyxy = results[0].boxes.xyxy.tolist()
             id = results[0].boxes.id.tolist()
